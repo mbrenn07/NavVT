@@ -1,13 +1,16 @@
 // import React from "react";
 import axios from "axios";
 
-const getApiInfo = () => {
-    return axios.get("http://localhost:8080/hello-world");
-    // return "hello";
+const getActiveBusInfo = () => {
+    return axios.get("http://localhost:8080/activeBusInfo")
 }
 
-const getBTInfo = () => {
-    return axios.get("http://localhost:8080/testPoll")
+const getInitialBusInfo = () => {
+    return axios.get("http://localhost:8080/initialBusInfo")
 }
 
-export { getApiInfo, getBTInfo };
+const getBTInfo = (busName) => {
+    return axios.get("http://localhost:8080/busRoute/" + busName)
+}
+
+export { getActiveBusInfo, getInitialBusInfo, getBTInfo };
