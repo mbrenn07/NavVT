@@ -25,7 +25,7 @@ function App() {
             <TransitSelector />
           </Grid>
           <Grid item sx={{ width: "100%", height: "100%" }}>
-            <Box sx={{ backgroundColor: "red", width: "100%", height: "calc(100%)", mt: -.5 }} />
+            <Box sx={{ backgroundColor: "red", width: "100%", height: "calc(100%)", mt: -.5, zIndex: -2 }} />
           </Grid>
         </Grid>
       </Grid>
