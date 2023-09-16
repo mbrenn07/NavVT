@@ -35,7 +35,7 @@ function App() {
                   zIndex: 99,
                   bottom: 0,
                   right: 0,
-                  Width: "100%",
+                  width: "100%",
                   maxHeight: '100%'
                 }}
               />
