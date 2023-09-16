@@ -101,6 +101,32 @@ const App = () => {
             center={center}
             zoom={14}
           >
+            {stopCodeToBus && Object.values(stopCodeToBus).map((val, i) => {
+              var routeId;
+              if(val.buses) {
+                let buses = Array.from(val.buses);
+                routeId = buses[0];
+                console.log(routeId);
+              }
+              else {
+                return <></>
+              }
+              // <svg xmlns="http://www.w3.org/2000/svg" 
+              // height="24" viewBox="0 -960 960 960" 
+              // width="24">
+              //   <path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z"/>
+              //   </svg>
+              return (val.stop && <MarkerF key={i} position={{ lat: parseFloat(val.stop.latitude), lng: parseFloat(val.stop.longitude) }}
+                icon={{
+                  path: "M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z",
+                  scale: 0.02,
+                  strokeColor: "#000000",
+                  fillColor: busToColor[routeId],
+                  fillOpacity: 1,
+                }} />)
+
+            })
+            }
             {busLines}
             {buses.length > 0 && (
               buses.map((bus, i) => {
@@ -112,7 +138,7 @@ const App = () => {
                     icon={
                       {
                         path: "M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z",
-                        scale: 1.25,
+                        scale: 1.4,
                         strokeColor: "#000000",
                         fillColor: busToColor[bus.routeId],
                         fillOpacity: 1,
@@ -133,18 +159,7 @@ const App = () => {
                 )
               })
             )}
-            {stopCodeToBus && Object.values(stopCodeToBus).map((val, i) => {
-              return (val.stop && <MarkerF key={i} position={{ lat: parseFloat(val.stop.latitude), lng: parseFloat(val.stop.longitude) }}
-                icon={{
-                  path: "M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z",
-                  scale: 0.02,
-                  strokeColor: "#000000",
-                  fillColor: "#000000",
-                  fillOpacity: 1,
-                }} />)
-
-            })
-            }
+            
           </GoogleMap>
 
         )}
