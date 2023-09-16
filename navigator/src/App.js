@@ -1,12 +1,18 @@
-import logo from './logo.svg';
+import Box from '@mui/material/Box';
 import './App.css';
 import BTMap from './BTMap';
+import TransitSelector from './components/TransitSelector';
 
 function App() {
   return (
-    <div className="App">
+
+    <Box sx={{
+    }}>
+      <TransitSelector></TransitSelector>
+      <div className="App">
       <BTMap/>
     </div>
+    </Box >
   );
 }
 
