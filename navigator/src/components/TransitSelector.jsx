@@ -22,10 +22,11 @@ function TransitSelector() {
     return (
         <Box
             sx={{
-                position: 'absolute',
-                top: 8,
-                right: 8,
-                width: 200
+                position: "absolute",
+                top: 0,
+                right: 0,
+                height: "20%",
+                width: "30%"
             }}
         >
             <Autocomplete
