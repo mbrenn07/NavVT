@@ -1,6 +1,6 @@
 import { GoogleMap, MarkerF, useLoadScript, PolylineF } from "@react-google-maps/api";
 import { useMemo, useState, useEffect } from "react";
-import { getBTInfo } from "./BackendService";
+import BackendService from "./BackendService.js";
 
 import "./App.css";
 
@@ -13,11 +13,11 @@ const App = () => {
   const [buses, setBuses] = useState([]);
 
   useEffect(() => {
-    getBTInfo().then((response) => {
+    BackendService.getBTInfo().then((response) => {
       setBuses(response.data.data);
       //use buses[x].states[0] to get direction, speed, capacity, passengers, lat, long
     }
-    )
+    );
   }, [])
 
 
