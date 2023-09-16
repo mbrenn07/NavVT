@@ -18,7 +18,7 @@ function TransitSelector({ options }) {
                 <Autocomplete
                     multiple
                     id="transit-selector"
-                    sx={{ width: 250, mt: .5, backgroundColor: "white" }}
+                    sx={{ width: 250, mt: 1, mb: .5 }}
                     limitTags={1}
                     options={options}
                     onChange={(event, newValue) => {
@@ -28,7 +28,7 @@ function TransitSelector({ options }) {
                 />
             </Grid>
             <Grid item sx={{ width: "100%", height: "100%" }}>
-                <Box sx={{ backgroundColor: "darkgrey", width: "100%", height: "calc(100%)", mt: -.5, zIndex: 99, position: "relative" }}>
+                <Box sx={{ backgroundColor: "#75787b", width: "100%", height: "calc(100%)", mt: -.5, zIndex: 99, position: "relative" }}>
                     <TransitInfo selectedTransitLines={selectedTransitLines.length ? selectedTransitLines : options} />
                     <Box
                         component="img"

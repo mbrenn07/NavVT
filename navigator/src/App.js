@@ -7,6 +7,9 @@ import BTMap from './BTMap';
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
+    primary: {
+      main: '#E5751F'
+    },
   },
 });
 
@@ -14,7 +17,7 @@ function App() {
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <Box sx={{ width: "100vw", height: "100vh", overflow: "clip", backgroundColor: "#121212" }}>
+      <Box sx={{ width: "100vw", height: "100vh", overflow: "clip", backgroundColor: "#75787b" }}>
         <BTMap />
       </Box>
     </ThemeProvider>
