@@ -13,6 +13,13 @@
   }
 }
 
+.map-container {
+  height: 100%;
+  width: 100%;
+  overflow: auto !important;
+  position: initial !important;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
