@@ -68,6 +68,7 @@ public class PollBTTransit {
     @GetMapping("/busRoute/{busName}")
     @ResponseBody
     public String getBusRoute(@PathVariable("busName") String busName) throws ProtocolException {
+        busName = busName.replaceAll(" ", "%20");
         try {
             URL url = new URL(
                     "https://ridebt.org/index.php?option=com_ajax&module=bt_map&format=json&Itemid=101&method=getPatternPoints&patternName=" + busName);

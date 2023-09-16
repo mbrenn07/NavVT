@@ -11,27 +11,48 @@ const App = () => {
   const center = useMemo(() => ({ lat: 37.228198, lng: -80.423329 }), []);
 
   const [buses, setBuses] = useState([]);
+  const [busToStopCode, setBusToStopCode] = useState([]);
+  const [stopCodeToBus, setStopCodeToBus] = useState({});
 
   useEffect(() => {
     BackendService.getActiveBusInfo().then((response) => {
       setBuses(response.data.data);
       //use buses[x].states[0] to get direction, speed, capacity, passengers, lat, long
+      createBusRoutes(response.data.data);
     }
     );
     const interval = setInterval(() => {
       BackendService.getActiveBusInfo().then((response) => {
+        let busPrevLength = buses.length;
         setBuses(response.data.data);
+        console.log(stopCodeToBus);
         //use buses[x].states[0] to get direction, speed, capacity, passengers, lat, long
+        if (response.data.data.length !== busPrevLength) {
+          createBusRoutes(response.data.data);
+        }
       }
       );
     }, 5000)
     return () => clearInterval(interval);
   }, [])
 
-
-
-  const marker1Position = { lat: 37.2269965, lng: -80.4113475 };
-  const marker2Position = { lat: 37.230000, lng: -80.420000 };
+  const createBusRoutes = (newBuses) => {
+    newBuses.forEach((bus) => {
+      BackendService.getBusRoute(bus.patternName)
+      .then((data) => {
+        //process data into stopIdToBus
+        data.data.data?.forEach((stop) => {
+          if (stop.isBusStop === "Y") {
+            stopCodeToBus[stop.stopCode] = stopCodeToBus[stop.stopCode] ? stopCodeToBus[stop.stopCode].add(bus.routeId) : new Set([bus.routeId]);
+            busToStopCode[bus.routeId] = busToStopCode[bus.routeId] ? busToStopCode[bus.routeId].add(stop.stopCode) : new Set([stop.stopCode]);
+          }
+        });
+        setStopCodeToBus({...stopCodeToBus});
+        setBusToStopCode({...busToStopCode});
+      })
+      .catch((e) => console.error(e));
+    });
+  }
 
   return (
     <>

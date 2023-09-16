@@ -11,8 +11,9 @@ class BackendService {
         return axios.get("http://localhost:8080/initialBusInfo")
     }
 
-    getBTInfo = (busName) => {
-        return axios.get("http://localhost:8080/busRoute/" + busName)
+    getBusRoute = (busName) => {
+        const formattedBusName = busName.replaceAll(" ", "%20");
+        return axios.get("http://localhost:8080/busRoute/" + formattedBusName)
     }
 }
 
