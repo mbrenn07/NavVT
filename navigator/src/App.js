@@ -2,14 +2,14 @@ import Box from '@mui/material/Box';
 import './App.css';
 import BTMap from './BTMap';
 import TransitSelector from './components/TransitSelector';
-import { getActiveBusInfo } from './BackendService.js';
+import BackendService from './BackendService.js';
 import { useEffect } from "react";
 import { Grid } from '@mui/material';
 
 function App() {
 
   useEffect(() => {
-    getActiveBusInfo().then((response) => {
+    BackendService.getActiveBusInfo().then((response) => {
       console.log(response.data);
     })
   }, []);
@@ -25,7 +25,7 @@ function App() {
             <TransitSelector />
           </Grid>
           <Grid item sx={{ width: "100%", height: "100%" }}>
-            <Box sx={{ backgroundColor: "red", width: "100%", height: "calc(100%)", mt: -.5 }} />
+            <Box sx={{ backgroundColor: "red", width: "100%", height: "calc(100%)", mt: -.5, zIndex: -2 }} />
           </Grid>
         </Grid>
       </Grid>
