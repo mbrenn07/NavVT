@@ -25,7 +25,21 @@ function App() {
             <TransitSelector />
           </Grid>
           <Grid item sx={{ width: "100%", height: "100%" }}>
-            <Box sx={{ backgroundColor: "red", width: "100%", height: "calc(100%)", mt: -.5, zIndex: -2 }} />
+            <Box sx={{ backgroundColor: "red", width: "100%", height: "calc(100%)", mt: -.5, zIndex: -2, position: "relative" }}>
+              <Box
+                component="img"
+                src="/NavVTLogo.png"
+                alt="NavVT Logo"
+                sx={{
+                  position: 'absolute',
+                  zIndex: 99,
+                  bottom: 0,
+                  right: 0,
+                  Width: "100%",
+                  maxHeight: '100%'
+                }}
+              />
+            </Box>
           </Grid>
         </Grid>
       </Grid>
