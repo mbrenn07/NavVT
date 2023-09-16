@@ -76,7 +76,6 @@ const App = () => {
             }
             waypointCoords.push({ lat: parseFloat(stop.latitude), lng: parseFloat(stop.longitude) });
           });
-          console.log(stopCodeToBus);
           setStopCodeToBus({ ...stopCodeToBus });
           setbusToStop({ ...busToStop });
           busLines.push(
