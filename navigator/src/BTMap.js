@@ -11,7 +11,7 @@ const App = () => {
   const center = useMemo(() => ({ lat: 37.228198, lng: -80.423329 }), []);
 
   const [buses, setBuses] = useState([]);
-  const [busToStopCode, setBusToStopCode] = useState([]);
+  const [busToStop, setbusToStop] = useState([]);
   const [stopCodeToBus, setStopCodeToBus] = useState({});
 
   useEffect(() => {
@@ -44,11 +44,11 @@ const App = () => {
         data.data.data?.forEach((stop) => {
           if (stop.isBusStop === "Y") {
             stopCodeToBus[stop.stopCode] = stopCodeToBus[stop.stopCode] ? stopCodeToBus[stop.stopCode].add(bus.routeId) : new Set([bus.routeId]);
-            busToStopCode[bus.routeId] = busToStopCode[bus.routeId] ? busToStopCode[bus.routeId].add(stop.stopCode) : new Set([stop.stopCode]);
+            busToStop[bus.routeId] = busToStop[bus.routeId] ? busToStop[bus.routeId].add(stop) : new Set([stop]);
           }
         });
         setStopCodeToBus({...stopCodeToBus});
-        setBusToStopCode({...busToStopCode});
+        setbusToStop({...busToStop});
       })
       .catch((e) => console.error(e));
     });
