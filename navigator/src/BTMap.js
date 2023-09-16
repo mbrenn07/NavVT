@@ -16,16 +16,28 @@ const App = () => {
   const [busToStop, setbusToStop] = useState([]);
   const [stopCodeToBus, setStopCodeToBus] = useState({});
   const [busLines, setBusLines] = useState([]);
+  const [busToColor, setBusToColor] = useState({});
 
   const busLength = useRef(0);
   busLength.current = 0;
 
   useEffect(() => {
-    BackendService.getActiveBusInfo().then((response) => {
+    BackendService.getInitialBusInfo()
+    .then((data) => {
+      const busInfoObj = data.data.data;
+      Object.keys(busInfoObj).forEach((key) => {
+        busToColor[key] = "#" + busInfoObj[key][0].routeColor;
+      });
+      setBusToColor({...busToColor});
+    })
+    .catch((e) => console.error(e));
+
+    BackendService.getActiveBusInfo()
+    .then((response) => {
       setBuses(response.data.data);
       createBusRoutes(response.data.data);
-    }
-    );
+    });
+
     const interval = setInterval(() => {
       BackendService.getActiveBusInfo().then((response) => {
         setBuses(response.data.data);
@@ -45,7 +57,9 @@ const App = () => {
           //process data into stopIdToBus
           data.data.data?.forEach((stop) => {
             if (stop.isBusStop === "Y") {
-              stopCodeToBus[stop.stopCode] = { stop: stop, buses: stopCodeToBus[stop.stopCode]?.buses ? stopCodeToBus[stop.stopCode].buses.add(bus.routeId) : new Set([bus.routeId]) };
+              if (stop) {
+                stopCodeToBus[stop.stopCode] = { stop: stop, buses: stopCodeToBus[stop.stopCode]?.buses ? stopCodeToBus[stop.stopCode].buses.add(bus.routeId) : new Set([bus.routeId]) };
+              }
               busToStop[bus.routeId] = busToStop[bus.routeId] ? busToStop[bus.routeId].add(stop) : new Set([stop]);
             }
             waypointCoords.push({ lat: parseFloat(stop.latitude), lng: parseFloat(stop.longitude) });
@@ -56,7 +70,7 @@ const App = () => {
             <PolylineF
               path={waypointCoords}
               options={{
-                strokeColor: "#FF0000",
+                strokeColor: busToColor[bus.routeId],
                 strokeOpacity: 1.0,
                 strokeWeight: 2,
               }}
@@ -81,17 +95,19 @@ const App = () => {
           >
             {busLines}
             {buses.length > 0 && (
-              buses.map((b, i) => {
-                return (<MarkerF key={i} position={{ lat: b.states[0].latitude, lng: b.states[0].longitude }}
+              buses.map((bus, i) => {
+                return (<MarkerF onMouseOver={() => {
+                  console.log(bus.routeId);
+                }} key={i} position={{ lat: bus.states[0].latitude, lng: bus.states[0].longitude }}
                   icon={
                     {
                       path: "M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z",
                       scale: 1.25,
                       strokeColor: "#000000",
-                      fillColor: "#000000",
+                      fillColor: busToColor[bus.routeId],
                       fillOpacity: 1,
                       anchor: { x: 10, y: 10 },
-                      rotation: -45 + parseInt(b.states[0].direction),
+                      rotation: -45 + parseInt(bus.states[0].direction),
                     }} />)
               })
             )}
