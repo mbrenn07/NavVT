@@ -1,13 +1,16 @@
 // import React from "react";
 import axios from "axios";
 
-class BackendService {
-    getApiInfo() {
-        return axios.get("http://localhost:8080/hello-world");
-    }
-
-    getBTInfo() {
-        return axios.get("http://localhost:8080/testPoll");
-    }
+const getActiveBusInfo = () => {
+    return axios.get("http://localhost:8080/activeBusInfo")
 }
-export default new BackendService();
+
+const getInitialBusInfo = () => {
+    return axios.get("http://localhost:8080/initialBusInfo")
+}
+
+const getBTInfo = (busName) => {
+    return axios.get("http://localhost:8080/busRoute/" + busName)
+}
+
+export { getActiveBusInfo, getInitialBusInfo, getBTInfo };

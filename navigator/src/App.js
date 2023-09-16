@@ -2,48 +2,34 @@ import Box from '@mui/material/Box';
 import './App.css';
 import BTMap from './BTMap';
 import TransitSelector from './components/TransitSelector';
-import BackendService from './BackendService.js';
+import { getActiveBusInfo } from './BackendService.js';
 import { useEffect } from "react";
-import { Typography } from '@mui/material';
+import { Grid } from '@mui/material';
 
 function App() {
 
   useEffect(() => {
-    BackendService.getApiInfo().then((response) => {
-      console.log(response.data);
-    })
-    BackendService.getBTInfo().then((response) => {
+    getActiveBusInfo().then((response) => {
       console.log(response.data);
     })
   }, []);
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100vh"
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          width: "95%",
-          height: "95%",
-          position: "relative",
-        }}
-      >
-        <Box
-          sx={{
-            bgcolor: "grey.300",
-            width: "70%",
-            height: "100%",
-          }}
-        >
-          {/* <Box sx={{
+    <Box sx={{ width: "100vw", height: "100vh", overflow: "clip" }}>
+      <Grid container columns={12} direction={"row"} wrap='nowrap' sx={{ width: "100%", height: "100%" }}>
+        <Grid item xs={true} sx={{ width: "100%", height: "100%" }}>
+          <BTMap />
+        </Grid>
+        <Grid container item xs={"auto"} columns={10} direction={"column"} wrap='nowrap' sx={{ mx: 1 }}>
+          <Grid item xs={1}>
+            <TransitSelector />
+          </Grid>
+          <Grid item sx={{ width: "100%", height: "100%" }}>
+            <Box sx={{ backgroundColor: "red", width: "100%", height: "calc(100%)", mt: -.5 }} />
+          </Grid>
+        </Grid>
+      </Grid>
+      {/* <Box sx={{
             display: "flex",
             position: "absolute",
             zIndex: 99,
@@ -56,12 +42,7 @@ function App() {
             </svg>
             <Typography sx={{ fontSize: '20px', transform: "translate(25%, 25%)", opacity: "0.75", color: "red" }}>NavVT</Typography>
           </Box> */}
-          <BTMap />
-        </Box>
-
-        <TransitSelector></TransitSelector>
-      </Box>
-    </Box >
+    </Box>
   );
 }
 
