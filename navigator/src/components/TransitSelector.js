@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import TransitInfo from './TransitInfo';
 import { Grid } from '@mui/material';
 
-function TransitSelector({ options, buses, busToColor, displayBuses, setDisplayBuses, createBusRoutes }) {
+function TransitSelector({ options, buses, busToColor, busToStop, displayBuses, setDisplayBuses, createBusRoutes }) {
 
     const [selectedTransitLines, setSelectedTransitLines] = useState([])
 

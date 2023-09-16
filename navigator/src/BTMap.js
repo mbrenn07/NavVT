@@ -189,6 +189,7 @@ const App = () => {
         options={Array.from(new Set(buses.map((bus) => bus.routeId)))}
         buses={buses}
         busToColor={busToColor}
+        busToStop={busToStop}
         displayBuses={displayBuses}
         setDisplayBuses={setDisplayBuses}
         createBusRoutes={createBusRoutes}
