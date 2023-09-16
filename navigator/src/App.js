@@ -2,13 +2,16 @@ import Box from '@mui/material/Box';
 import './App.css';
 import BTMap from './BTMap';
 import TransitSelector from './components/TransitSelector';
-import { getApiInfo } from './BackendService.js';
+import { getApiInfo, getBTInfo } from './BackendService.js';
 import { useEffect } from "react";
 
 function App() {
 
   useEffect(() => {
     getApiInfo().then((response) => {
+      console.log(response.data);
+    })
+    getBTInfo().then((response) => {
       console.log(response.data);
     })
   }, []);
