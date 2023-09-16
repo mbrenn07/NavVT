@@ -6,4 +6,8 @@ const getApiInfo = () => {
     // return "hello";
 }
 
-export { getApiInfo };
+const getBTInfo = () => {
+    return axios.get("http://localhost:8080/testPoll")
+}
+
+export { getApiInfo, getBTInfo };
