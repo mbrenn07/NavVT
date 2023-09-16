@@ -111,13 +111,13 @@ const App = () => {
             zoom={14}
           >
             {stopCodeToBus && Object.values(stopCodeToBus).map((val, i) => {
-              var routeId;
+              let routeIds = [];
               if (val.buses) {
                 let buses = Array.from(val.buses);
                 let busFound = false;
-                buses.map(b => {
-                  if (!busFound && (displayBuses.includes(b) || displayBuses.length === 0)) {
-                    routeId = b;
+                buses.forEach(b => {
+                  if ((displayBuses.includes(b) || displayBuses.length === 0)) {
+                    routeIds.push(b);
                     busFound = true;
                   }
                 });
@@ -128,19 +128,24 @@ const App = () => {
               else {
                 return <></>
               }
-              // <svg xmlns="http://www.w3.org/2000/svg" 
-              // height="24" viewBox="0 -960 960 960" 
-              // width="24">
-              //   <path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z"/>
-              //   </svg>
-              console.log(routeId)
+              console.log(routeIds)
+              let xyz = 'data:image/svg+xml;utf-8, \
+              <svg width="20" height="20" viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg"> \
+                  <defs><linearGradient id="mygx"> \
+                      <stop offset="20%" stop-color="%23'+ busToColor[routeIds[2 % routeIds.length]].substring(1) + '" /> \
+                      <stop offset="25%" stop-color="%23'+ busToColor[routeIds[2 % routeIds.length]].substring(1) + '"/> \
+                      <stop offset="25%" stop-color="%23'+ busToColor[routeIds[0 % routeIds.length]].substring(1) + '"/> \
+                      <stop offset="50%" stop-color="%23'+ busToColor[routeIds[0 % routeIds.length]].substring(1) + '"/> \
+                      <stop offset="50%" stop-color="%23'+ busToColor[routeIds[3 % routeIds.length]].substring(1) + '"/> \
+                      <stop offset="70%" stop-color="%23'+ busToColor[routeIds[3 % routeIds.length]].substring(1) + '"/> \
+                      <stop offset="70%" stop-color="%23'+ busToColor[routeIds[1 % routeIds.length]].substring(1) + '"/> \
+                  </linearGradient></defs> \
+                  <path fill="url(%23mygx)" stroke-width="1.5" d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z"></path> \
+                  </svg>';
+                console.log(xyz)
               return (val.stop && <MarkerF key={Math.random()} position={{ lat: parseFloat(val.stop.latitude), lng: parseFloat(val.stop.longitude) }}
                 icon={{
-                  path: "M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z",
-                  scale: 0.02,
-                  strokeColor: "#000000",
-                  fillColor: busToColor[routeId],
-                  fillOpacity: 1,
+                  url: xyz,
                 }} />)
 
             })
