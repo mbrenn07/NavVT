@@ -5,10 +5,7 @@ import Box from '@mui/material/Box';
 import TransitInfo from './TransitInfo';
 import { Grid } from '@mui/material';
 
-function TransitSelector({ options }) {
-
-    // We will need state variable(s) to determine the currently selected TransitLine
-    // We will need useEffect?
+function TransitSelector({ options, busToColor }) {
 
     const [selectedTransitLines, setSelectedTransitLines] = useState([])
 
@@ -29,7 +26,7 @@ function TransitSelector({ options }) {
             </Grid>
             <Grid item sx={{ width: "100%", height: "100%" }}>
                 <Box sx={{ backgroundColor: "#75787b", width: "100%", height: "calc(100%)", mt: -.5, zIndex: 99, position: "relative" }}>
-                    <TransitInfo selectedTransitLines={selectedTransitLines.length ? selectedTransitLines : options} />
+                    <TransitInfo selectedTransitLines={selectedTransitLines.length ? selectedTransitLines : options} busToColor={busToColor} />
                     <Box
                         component="img"
                         src="/NavVTLogo.png"

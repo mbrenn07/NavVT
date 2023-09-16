@@ -23,20 +23,20 @@ const App = () => {
 
   useEffect(() => {
     BackendService.getInitialBusInfo()
-    .then((data) => {
-      const busInfoObj = data.data.data;
-      Object.keys(busInfoObj).forEach((key) => {
-        busToColor[key] = "#" + busInfoObj[key][0].routeColor;
-      });
-      setBusToColor({...busToColor});
-    })
-    .catch((e) => console.error(e));
+      .then((data) => {
+        const busInfoObj = data.data.data;
+        Object.keys(busInfoObj).forEach((key) => {
+          busToColor[key] = "#" + busInfoObj[key][0].routeColor;
+        });
+        setBusToColor({ ...busToColor });
+      })
+      .catch((e) => console.error(e));
 
     BackendService.getActiveBusInfo()
-    .then((response) => {
-      setBuses(response.data.data);
-      createBusRoutes(response.data.data);
-    });
+      .then((response) => {
+        setBuses(response.data.data);
+        createBusRoutes(response.data.data);
+      });
 
     const interval = setInterval(() => {
       BackendService.getActiveBusInfo().then((response) => {
@@ -112,21 +112,23 @@ const App = () => {
                     }} />)
               })
             )}
-                      {stopCodeToBus && Object.values(stopCodeToBus).map((val, i) => {
-             return(val.stop && <MarkerF key={i} position={{ lat: parseFloat(val.stop.latitude), lng: parseFloat(val.stop.longitude) }} 
-             icon = {{path: "M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z",
-             scale: 0.02,
-             strokeColor: "#000000",
-             fillColor: "#000000",
-             fillOpacity: 1, }} />)
+            {stopCodeToBus && Object.values(stopCodeToBus).map((val, i) => {
+              return (val.stop && <MarkerF key={i} position={{ lat: parseFloat(val.stop.latitude), lng: parseFloat(val.stop.longitude) }}
+                icon={{
+                  path: "M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z",
+                  scale: 0.02,
+                  strokeColor: "#000000",
+                  fillColor: "#000000",
+                  fillOpacity: 1,
+                }} />)
 
-          })
-          }
+            })
+            }
           </GoogleMap>
 
         )}
       </Grid>
-      <TransitSelector options={Array.from(new Set(buses.map((bus) => bus.routeId)))} />
+      <TransitSelector options={Array.from(new Set(buses.map((bus) => bus.routeId)))} busToColor={busToColor} />
     </Grid>
   );
 };
