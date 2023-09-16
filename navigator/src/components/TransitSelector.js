@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import TransitInfo from './TransitInfo';
 import { Grid } from '@mui/material';
 
-function TransitSelector({ options, busToColor }) {
+function TransitSelector({ options, buses, busToColor, displayBuses, setDisplayBuses, createBusRoutes }) {
 
     const [selectedTransitLines, setSelectedTransitLines] = useState([])
 
@@ -20,6 +20,8 @@ function TransitSelector({ options, busToColor }) {
                     options={options}
                     onChange={(event, newValue) => {
                         setSelectedTransitLines(newValue);
+                        setDisplayBuses(newValue);
+                        createBusRoutes(newValue.length === 0 ? buses : buses.filter(b => newValue.includes(b.routeId)));
                     }}
                     renderInput={(params) => <TextField {...params} label="Filter Transit Line(s)" />}
                 />

@@ -17,6 +17,7 @@ const App = () => {
   const [stopCodeToBus, setStopCodeToBus] = useState({});
   const [busLines, setBusLines] = useState([]);
   const [busToColor, setBusToColor] = useState({});
+  const [displayBuses, setDisplayBuses] = useState([]);
 
   const [isOpen, setIsOpen] = useState(false);
   const [infoWindowData, setInfoWindowData] = useState();
@@ -38,6 +39,9 @@ const App = () => {
     BackendService.getActiveBusInfo()
       .then((response) => {
         setBuses(response.data.data);
+        setDisplayBuses(response.data.data.map((b) => {
+          return b.routeId;
+        }))
         createBusRoutes(response.data.data);
       });
 
@@ -50,9 +54,14 @@ const App = () => {
     return () => clearInterval(interval);
   }, [])
 
+  // useEffect(() => {
+  //   createBusRoutes(buses.filter(b => displayBuses.includes(b.routeId)));
+  // }, [displayBuses]);
+
   const createBusRoutes = (newBuses) => {
     stopCodeToBus.length = 0;
     busToStop.length = 0;
+    busLines.length = 0;
     newBuses.forEach((bus) => {
       const waypointCoords = [];
       BackendService.getBusRoute(bus.patternName)
@@ -104,10 +113,18 @@ const App = () => {
           >
             {stopCodeToBus && Object.values(stopCodeToBus).map((val, i) => {
               var routeId;
-              if(val.buses) {
+              if (val.buses) {
                 let buses = Array.from(val.buses);
-                routeId = buses[0];
-                console.log(routeId);
+                let busFound = false;
+                buses.map(b => {
+                  if (!busFound && (displayBuses.includes(b) || displayBuses.length === 0)) {
+                    routeId = b;
+                    busFound = true;
+                  }
+                });
+                if (!busFound) {
+                  return <></>;
+                }
               }
               else {
                 return <></>
@@ -117,7 +134,8 @@ const App = () => {
               // width="24">
               //   <path d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z"/>
               //   </svg>
-              return (val.stop && <MarkerF key={i} position={{ lat: parseFloat(val.stop.latitude), lng: parseFloat(val.stop.longitude) }}
+              console.log(routeId)
+              return (val.stop && <MarkerF key={Math.random()} position={{ lat: parseFloat(val.stop.latitude), lng: parseFloat(val.stop.longitude) }}
                 icon={{
                   path: "M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z",
                   scale: 0.02,
@@ -131,6 +149,9 @@ const App = () => {
             {busLines}
             {buses.length > 0 && (
               buses.map((bus, i) => {
+                if (!displayBuses.includes(bus.routeId) && displayBuses.length !== 0) {
+                  return <></>
+                }
                 return (
                   <MarkerF onClick={() => {
                     handleMarkerClick(i, bus);
@@ -160,12 +181,19 @@ const App = () => {
                 )
               })
             )}
-            
+
           </GoogleMap>
 
         )}
       </Grid>
-      <TransitSelector options={Array.from(new Set(buses.map((bus) => bus.routeId)))} busToColor={busToColor} />
+      <TransitSelector
+        options={Array.from(new Set(buses.map((bus) => bus.routeId)))}
+        buses={buses}
+        busToColor={busToColor}
+        displayBuses={displayBuses}
+        setDisplayBuses={setDisplayBuses}
+        createBusRoutes={createBusRoutes}
+      />
     </Grid>
   );
 };
