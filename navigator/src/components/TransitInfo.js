@@ -11,14 +11,14 @@ function TransitInfo({ selectedTransitLines }) {
     return (
         <Box sx={{ overflow: "auto", height: "100%" }}>
             {selectedTransitLines.map((option, index) => (
-                <Accordion key={index}>
+                <Accordion key={index} disableGutters>
                     <AccordionSummary
                         aria-controls={`panel${index}-content`}
                         id={`panel${index}-header`}
                     >
                         <Typography>{option + " Info"}</Typography>
                     </AccordionSummary>
-                    <AccordionDetails>
+                    <AccordionDetails sx={{ margin: 0 }}>
                         <Typography>
                             {option}
                         </Typography>
