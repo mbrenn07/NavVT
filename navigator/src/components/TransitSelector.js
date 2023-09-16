@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import TransitInfo from './TransitInfo';
 import { Grid } from '@mui/material';
 
-function TransitSelector({ options, busToColor }) {
+function TransitSelector({ options, busToColor, busToStop }) {
 
     const [selectedTransitLines, setSelectedTransitLines] = useState([])
 
@@ -15,7 +15,7 @@ function TransitSelector({ options, busToColor }) {
                 <Autocomplete
                     multiple
                     id="transit-selector"
-                    sx={{ width: 250, mt: 1, mb: .5 }}
+                    sx={{ mt: 1, mb: .5 }}
                     limitTags={1}
                     options={options}
                     onChange={(event, newValue) => {
@@ -25,8 +25,8 @@ function TransitSelector({ options, busToColor }) {
                 />
             </Grid>
             <Grid item sx={{ width: "100%", height: "100%" }}>
-                <Box sx={{ backgroundColor: "#75787b", width: "100%", height: "calc(100%)", mt: -.5, zIndex: 99, position: "relative" }}>
-                    <TransitInfo selectedTransitLines={selectedTransitLines.length ? selectedTransitLines : options} busToColor={busToColor} />
+                <Box sx={{ backgroundColor: "#75787b", width: "100%", maxWidth: 350, height: "calc(100%)", mt: -.5, zIndex: 99, position: "relative" }}>
+                    <TransitInfo selectedTransitLines={selectedTransitLines.length ? selectedTransitLines : options} busToColor={busToColor} busToStop={busToStop} />
                     <Box
                         component="img"
                         src="/NavVTLogo.png"

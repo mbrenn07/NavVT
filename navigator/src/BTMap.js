@@ -67,7 +67,6 @@ const App = () => {
             }
             waypointCoords.push({ lat: parseFloat(stop.latitude), lng: parseFloat(stop.longitude) });
           });
-          console.log(stopCodeToBus);
           setStopCodeToBus({ ...stopCodeToBus });
           setbusToStop({ ...busToStop });
           busLines.push(
@@ -150,7 +149,7 @@ const App = () => {
 
         )}
       </Grid>
-      <TransitSelector options={Array.from(new Set(buses.map((bus) => bus.routeId)))} busToColor={busToColor} />
+      <TransitSelector options={Array.from(new Set(buses.map((bus) => bus.routeId)))} busToColor={busToColor} busToStop={busToStop}/>
     </Grid>
   );
 };
