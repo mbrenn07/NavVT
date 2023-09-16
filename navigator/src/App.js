@@ -20,7 +20,7 @@ function App() {
         <Grid item xs={true} sx={{ width: "100%", height: "100%" }}>
           <BTMap />
         </Grid>
-        <TransitSelector options={["ABC", "DEF", "BCG"]} />
+        <TransitSelector options={["ABC", "DEF", "BCG", 'll', 'pp', 'asdw', 'asdhw']} />
       </Grid>
     </Box>
   );

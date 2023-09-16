@@ -42,7 +42,7 @@ function TransitSelector({ options }) {
                         alt="NavVT Logo"
                         sx={{
                             position: 'absolute',
-                            zIndex: 99,
+                            zIndex: -1,
                             bottom: 0,
                             right: 0,
                             width: "100%",
