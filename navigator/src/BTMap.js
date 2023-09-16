@@ -34,20 +34,8 @@ const App = () => {
         setBusToColor({ ...busToColor });
       })
       .catch((e) => console.error(e));
-      .then((data) => {
-        const busInfoObj = data.data.data;
-        Object.keys(busInfoObj).forEach((key) => {
-          busToColor[key] = "#" + busInfoObj[key][0].routeColor;
-        });
-        setBusToColor({ ...busToColor });
-      })
-      .catch((e) => console.error(e));
 
     BackendService.getActiveBusInfo()
-      .then((response) => {
-        setBuses(response.data.data);
-        createBusRoutes(response.data.data);
-      });
       .then((response) => {
         setBuses(response.data.data);
         createBusRoutes(response.data.data);
@@ -165,8 +153,6 @@ const App = () => {
                   fillOpacity: 1,
                 }} />)
 
-            })
-            }
             })
             }
           </GoogleMap>
