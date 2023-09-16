@@ -43,7 +43,7 @@ const App = () => {
           //process data into stopIdToBus
           data.data.data?.forEach((stop) => {
             if (stop.isBusStop === "Y") {
-              stopCodeToBus[stop.stopCode] = stopCodeToBus[stop.stopCode] ? stopCodeToBus[stop.stopCode].add(bus.routeId) : new Set([bus.routeId]);
+              stopCodeToBus[stop.stopCode] = {stop: stop, buses: stopCodeToBus[stop.stopCode]?.buses ? stopCodeToBus[stop.stopCode].buses.add(bus.routeId) : new Set([bus.routeId])};
               busToStop[bus.routeId] = busToStop[bus.routeId] ? busToStop[bus.routeId].add(stop) : new Set([stop]);
             }
             waypointCoords.push({ lat: parseFloat(stop.latitude), lng: parseFloat(stop.longitude) });
