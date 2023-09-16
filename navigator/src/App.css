@@ -16,8 +16,6 @@
 .map-container {
   height: 100%;
   width: 100%;
-  overflow: auto !important;
-  position: initial !important;
 }
 
 .App-header {
@@ -39,6 +37,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }

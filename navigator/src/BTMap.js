@@ -9,7 +9,7 @@ const App = () => {
   const center = useMemo(() => ({ lat: 37.228198, lng: -80.423329 }), []);
 
   return (
-    <div className="App">
+    <>
       {!isLoaded ? (
         <h1>Loading...</h1>
       ) : (
@@ -18,10 +18,10 @@ const App = () => {
           center={center}
           zoom={14}
         >
-        <MarkerF position={{ lat: 37.2269965, lng: -80.4113475 }} />
+          <MarkerF position={{ lat: 37.2269965, lng: -80.4113475 }} />
         </GoogleMap>
       )}
-    </div>
+    </>
   );
 };
 

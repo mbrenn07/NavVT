@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box';
 import './App.css';
-// import BTMap from './BTMap';
+import BTMap from './BTMap';
 import TransitSelector from './components/TransitSelector';
 import { getApiInfo } from './BackendService.js';
 import { useEffect } from "react";
@@ -38,14 +38,13 @@ function App() {
             width: "70%",
             height: "100%",
           }}
-
         >
-          {/* {Accordions stuff from TransitInfo} */}
+          <BTMap />
         </Box>
 
         <TransitSelector></TransitSelector>
       </Box>
-    </Box>
+    </Box >
   );
 }
 
