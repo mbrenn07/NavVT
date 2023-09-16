@@ -4,10 +4,7 @@ import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import TransitInfo from './TransitInfo';
 
-const options = ['ABC', 'DEF', 'FGH'];  // Example options
-// We will want to pass in options as a prop?, and from there filter them by name.
-
-function TransitSelector() {
+function TransitSelector({ options }) {
 
     // We will need state variable(s) to determine the currently selected TransitLine
     // We will need useEffect?
