@@ -18,7 +18,7 @@ function TransitSelector({ options }) {
                 <Autocomplete
                     multiple
                     id="transit-selector"
-                    sx={{ width: 250, mt: .5, }}
+                    sx={{ width: 250, mt: .5, backgroundColor: "white" }}
                     limitTags={1}
                     options={options}
                     onChange={(event, newValue) => {
