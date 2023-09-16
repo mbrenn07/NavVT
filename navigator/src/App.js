@@ -1,21 +1,26 @@
 import Box from '@mui/material/Box';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import './App.css';
 import BTMap from './BTMap';
-import TransitSelector from './components/TransitSelector';
-import { useState } from "react";
-import { Grid } from '@mui/material';
+
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: {
+      main: '#E5751F'
+    },
+  },
+});
 
 function App() {
 
   return (
-    <Box sx={{ width: "100vw", height: "100vh", overflow: "clip" }}>
-      <Grid container columns={12} direction={"row"} wrap='nowrap' sx={{ width: "100%", height: "100%" }}>
-        <Grid item xs={true} sx={{ width: "100%", height: "100%" }}>
-          <BTMap/>
-        </Grid>
-        <TransitSelector options={[]} />
-      </Grid>
-    </Box>
+    <ThemeProvider theme={darkTheme}>
+      <Box sx={{ width: "100vw", height: "100vh", overflow: "clip", backgroundColor: "#75787b" }}>
+        <BTMap />
+      </Box>
+    </ThemeProvider>
   );
 }
 

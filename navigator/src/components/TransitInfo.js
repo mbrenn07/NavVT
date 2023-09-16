@@ -2,6 +2,8 @@ import React from 'react';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import DirectionsBusIcon from '@mui/icons-material/DirectionsBus';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
@@ -11,12 +13,14 @@ function TransitInfo({ selectedTransitLines }) {
     return (
         <Box sx={{ overflow: "auto", height: "100%" }}>
             {selectedTransitLines.map((option, index) => (
-                <Accordion key={index} disableGutters>
+                <Accordion key={index} disableGutters sx={{ backgroundColor: "#861F41" }}>
                     <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
                         aria-controls={`panel${index}-content`}
                         id={`panel${index}-header`}
                     >
-                        <Typography>{option + " Info"}</Typography>
+                        <DirectionsBusIcon></DirectionsBusIcon>
+                        <Typography >{option + " Info"}</Typography>
                     </AccordionSummary>
                     <AccordionDetails sx={{ margin: 0 }}>
                         <Typography>
