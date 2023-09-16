@@ -9,7 +9,7 @@ function TransitSelector({ options }) {
     // We will need state variable(s) to determine the currently selected TransitLine
     // We will need useEffect?
 
-    const [selectedTransitLines, setselectedTransitLines] = useState(options[0])
+    const [selectedTransitLines, setSelectedTransitLines] = useState([])
 
     useEffect(() => {
         console.log(selectedTransitLines);
@@ -26,11 +26,12 @@ function TransitSelector({ options }) {
                 limitTags={1}
                 options={options}
                 onChange={(event, newValue) => {
-                    setselectedTransitLines(newValue);
+                    setSelectedTransitLines(newValue);
                 }}
-                renderInput={(params) => <TextField {...params} label="Select Transit Line" />}
+                renderInput={(params) => <TextField {...params} label="Filter Transit Line(s)" />}
             />
-            <TransitInfo options={options} accordionsToOpen={selectedTransitLines}></TransitInfo>
+            <TransitInfo selectedTransitLines={selectedTransitLines.length ? selectedTransitLines : options} >
+            </TransitInfo>
         </Box>
     );
 }

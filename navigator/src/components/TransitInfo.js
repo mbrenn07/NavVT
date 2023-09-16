@@ -6,14 +6,11 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 
 
-function TransitInfo({ options, accordionsToOpen }) {
-    // Take in all the options (buses)
-    // the accordionsToOpen is the selectedTransitLines from the TransitSelector component
-    // have a useEffect that checks when accordionsToOpen changes, and open the accordions as needed. 
+function TransitInfo({ selectedTransitLines }) {
 
     return (
-        <Box>
-            {options.map((option, index) => (
+        <Box sx={{ overflow: "auto", height: "100%" }}>
+            {selectedTransitLines.map((option, index) => (
                 <Accordion key={index}>
                     <AccordionSummary
                         aria-controls={`panel${index}-content`}
