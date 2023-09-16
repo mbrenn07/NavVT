@@ -20,24 +20,15 @@ function TransitSelector() {
 
 
     return (
-        <Box
-            sx={{
-                position: "absolute",
-                top: 0,
-                right: -5,
-                height: "20%",
-                width: "30%"
+        <Autocomplete
+            id="transit-selector"
+            sx={{width: 250, mt: .5}}
+            options={options}
+            onChange={(event, newValue) => {
+                setSelectedTransitLine(newValue);
             }}
-        >
-            <Autocomplete
-                id="transit-selector"
-                options={options}
-                onChange={(event, newValue) => {
-                    setSelectedTransitLine(newValue);
-                }}
-                renderInput={(params) => <TextField {...params} label="Select Transit Line" />}
-            />
-        </Box>
+            renderInput={(params) => <TextField {...params} label="Select Transit Line" />}
+        />
         // Once an option is selected, we will call our TransitInfo component.
     );
 }
