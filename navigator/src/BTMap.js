@@ -1,4 +1,4 @@
-import { GoogleMap, MarkerF, useLoadScript, PolylineF } from "@react-google-maps/api";
+import { GoogleMap, MarkerF, useLoadScript, PolylineF, InfoWindowF } from "@react-google-maps/api";
 import { useMemo, useState, useEffect, useRef } from "react";
 import BackendService from "./BackendService.js";
 import { Grid } from '@mui/material';
@@ -18,25 +18,28 @@ const App = () => {
   const [busLines, setBusLines] = useState([]);
   const [busToColor, setBusToColor] = useState({});
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [infoWindowData, setInfoWindowData] = useState();
+
   const busLength = useRef(0);
   busLength.current = 0;
 
   useEffect(() => {
     BackendService.getInitialBusInfo()
-    .then((data) => {
-      const busInfoObj = data.data.data;
-      Object.keys(busInfoObj).forEach((key) => {
-        busToColor[key] = "#" + busInfoObj[key][0].routeColor;
-      });
-      setBusToColor({...busToColor});
-    })
-    .catch((e) => console.error(e));
+      .then((data) => {
+        const busInfoObj = data.data.data;
+        Object.keys(busInfoObj).forEach((key) => {
+          busToColor[key] = "#" + busInfoObj[key][0].routeColor;
+        });
+        setBusToColor({ ...busToColor });
+      })
+      .catch((e) => console.error(e));
 
     BackendService.getActiveBusInfo()
-    .then((response) => {
-      setBuses(response.data.data);
-      createBusRoutes(response.data.data);
-    });
+      .then((response) => {
+        setBuses(response.data.data);
+        createBusRoutes(response.data.data);
+      });
 
     const interval = setInterval(() => {
       BackendService.getActiveBusInfo().then((response) => {
@@ -82,6 +85,11 @@ const App = () => {
     });
   }
 
+  const handleMarkerClick = (index, bus) => {
+    setInfoWindowData({ id: index, address: bus.routeId + ": " + bus.percentOfCapacity + "% Full" });
+    setIsOpen(true);
+  };
+
   return (
     <Grid container columns={12} direction={"row"} wrap='nowrap' sx={{ width: "100%", height: "100%" }}>
       <Grid item xs={true} sx={{ width: "100%", height: "100%" }}>
@@ -96,19 +104,33 @@ const App = () => {
             {busLines}
             {buses.length > 0 && (
               buses.map((bus, i) => {
-                return (<MarkerF onMouseOver={() => {
-                  console.log(bus.routeId);
-                }} key={i} position={{ lat: bus.states[0].latitude, lng: bus.states[0].longitude }}
-                  icon={
-                    {
-                      path: "M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z",
-                      scale: 1.25,
-                      strokeColor: "#000000",
-                      fillColor: busToColor[bus.routeId],
-                      fillOpacity: 1,
-                      anchor: { x: 10, y: 10 },
-                      rotation: -45 + parseInt(bus.states[0].direction),
-                    }} />)
+                return (
+                  <MarkerF onClick={() => {
+                    handleMarkerClick(i, bus);
+                  }}
+                    key={i} position={{ lat: bus.states[0].latitude, lng: bus.states[0].longitude }}
+                    icon={
+                      {
+                        path: "M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z",
+                        scale: 1.25,
+                        strokeColor: "#000000",
+                        fillColor: busToColor[bus.routeId],
+                        fillOpacity: 1,
+                        anchor: { x: 10, y: 10 },
+                        rotation: -45 + parseInt(bus.states[0].direction),
+                      }} >
+                    {isOpen && infoWindowData?.id === i && (
+                      <InfoWindowF
+                        onCloseClick={() => {
+                          setIsOpen(false);
+                        }}
+                      >
+                        <>
+                          {infoWindowData.address}
+                        </>
+                      </InfoWindowF>)}
+                  </MarkerF>
+                )
               })
             )}
           </GoogleMap>
