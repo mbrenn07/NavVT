@@ -1,6 +1,6 @@
 import { GoogleMap, MarkerF, useLoadScript, PolylineF } from "@react-google-maps/api";
 import { useMemo, useState, useEffect } from "react";
-import { getActiveBusInfo } from "./BackendService.js";
+import BackendService from "./BackendService.js";
 
 import "./App.css";
 
@@ -13,20 +13,21 @@ const App = () => {
   const [buses, setBuses] = useState([]);
 
   useEffect(() => {
-    getActiveBusInfo().then((response) => {
+    BackendService.getActiveBusInfo().then((response) => {
       setBuses(response.data.data);
       //use buses[x].states[0] to get direction, speed, capacity, passengers, lat, long
     }
     );
+    const interval = setInterval(() => {
+      BackendService.getActiveBusInfo().then((response) => {
+        setBuses(response.data.data);
+        //use buses[x].states[0] to get direction, speed, capacity, passengers, lat, long
+      }
+      );
+    }, 5000)
+    return () => clearInterval(interval);
   }, [])
 
-  setInterval(() => {
-    BackendService.getBTInfo().then((response) => {
-      setBuses(response.data.data);
-      //use buses[x].states[0] to get direction, speed, capacity, passengers, lat, long
-    }
-    );
-  }, 5000)
 
 
   const marker1Position = { lat: 37.2269965, lng: -80.4113475 };

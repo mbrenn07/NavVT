@@ -2,14 +2,14 @@ import Box from '@mui/material/Box';
 import './App.css';
 import BTMap from './BTMap';
 import TransitSelector from './components/TransitSelector';
-import { getActiveBusInfo } from './BackendService.js';
+import BackendService from './BackendService.js';
 import { useEffect } from "react";
 import { Grid } from '@mui/material';
 
 function App() {
 
   useEffect(() => {
-    getActiveBusInfo().then((response) => {
+    BackendService.getActiveBusInfo().then((response) => {
       console.log(response.data);
     })
   }, []);
