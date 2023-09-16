@@ -22,7 +22,7 @@ function App() {
         </Grid>
         <Grid container item xs={"auto"} columns={10} direction={"column"} wrap='nowrap' sx={{ mx: 1 }}>
           <Grid item xs={1}>
-            <TransitSelector options={['ABC', 'DEF', 'FGH']} />
+            <TransitSelector options={['ABC', 'DEF', 'FGH', 'IJK', 'MNO', 'PQR', 'STU']} />
           </Grid>
           <Grid item sx={{ width: "100%", height: "100%" }}>
             <Box sx={{ backgroundColor: "darkgrey", width: "100%", height: "calc(100%)", mt: -.5, zIndex: -2, position: "relative" }}>
