@@ -1,6 +1,8 @@
 import { GoogleMap, MarkerF, useLoadScript, PolylineF } from "@react-google-maps/api";
 import { useMemo, useState, useEffect, useRef } from "react";
 import BackendService from "./BackendService.js";
+import { Grid } from '@mui/material';
+import TransitSelector from "./components/TransitSelector.js"
 
 import "./App.css";
 
@@ -43,7 +45,7 @@ const App = () => {
           //process data into stopIdToBus
           data.data.data?.forEach((stop) => {
             if (stop.isBusStop === "Y") {
-              stopCodeToBus[stop.stopCode] = {stop: stop, buses: stopCodeToBus[stop.stopCode]?.buses ? stopCodeToBus[stop.stopCode].buses.add(bus.routeId) : new Set([bus.routeId])};
+              stopCodeToBus[stop.stopCode] = { stop: stop, buses: stopCodeToBus[stop.stopCode]?.buses ? stopCodeToBus[stop.stopCode].buses.add(bus.routeId) : new Set([bus.routeId]) };
               busToStop[bus.routeId] = busToStop[bus.routeId] ? busToStop[bus.routeId].add(stop) : new Set([stop]);
             }
             waypointCoords.push({ lat: parseFloat(stop.latitude), lng: parseFloat(stop.longitude) });
@@ -67,57 +69,38 @@ const App = () => {
   }
 
   return (
-    <>
-      {!isLoaded ? (
-        <h1>Loading...</h1>
-      ) : (
-        <GoogleMap
-          mapContainerClassName="map-container"
-          center={center}
-          zoom={14}
-        >
-          {busLines}
-          {buses.length > 0 && (
-            buses.map((b, i) => {
-              return (<MarkerF key={i} position={{ lat: b.states[0].latitude, lng: b.states[0].longitude }}
-                icon={
-                  {
-                    path: "M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z",
-                    scale: 1.25,
-                    strokeColor: "#000000",
-                    fillColor: "#000000",
-                    fillOpacity: 1,
-                    anchor: { x: 10, y: 10 },
-                    rotation: -45 + parseInt(b.states[0].direction),
-                  }} />)
-            })
-          )}
-          {/* Put routes.map here to render bus stop marker data */}
-          {/* {busToStop.length > 0 && (
-            busToStop.map((bus, i) => {
-              return (
-                <MarkerF key={i} position={{ lat: b.states[0].latitude , lng: b.states[0].longitude }} />
-              )
-            })
-          )} */}
+    <Grid container columns={12} direction={"row"} wrap='nowrap' sx={{ width: "100%", height: "100%" }}>
+      <Grid item xs={true} sx={{ width: "100%", height: "100%" }}>
+        {!isLoaded ? (
+          <h1>Loading...</h1>
+        ) : (
+          <GoogleMap
+            mapContainerClassName="map-container"
+            center={center}
+            zoom={14}
+          >
+            {busLines}
+            {buses.length > 0 && (
+              buses.map((b, i) => {
+                return (<MarkerF key={i} position={{ lat: b.states[0].latitude, lng: b.states[0].longitude }}
+                  icon={
+                    {
+                      path: "M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z",
+                      scale: 1.25,
+                      strokeColor: "#000000",
+                      fillColor: "#000000",
+                      fillOpacity: 1,
+                      anchor: { x: 10, y: 10 },
+                      rotation: -45 + parseInt(b.states[0].direction),
+                    }} />)
+              })
+            )}
+          </GoogleMap>
 
-          {/* <MarkerF position={{ lat: 37.2269965, lng: -80.4113475 }} 
-          icon = {{url: require('./navigation.svg').default,}}/>
-          <MarkerF position={{ lat: 37.230000, lng: -80.420000 }} 
-          icon = {{url: require('./navigation.svg').default,}}/> */}
-
-          {/* <PolylineF
-            path={[marker1Position, marker2Position]}
-            options={{
-              strokeColor: "#FF0000",
-              strokeOpacity: 1.0,
-              strokeWeight: 2,
-            }}
-          /> */}
-        </GoogleMap>
-
-      )}
-    </>
+        )}
+      </Grid>
+      <TransitSelector options={Array.from(new Set(buses.map((bus) => bus.routeId)))} />
+    </Grid>
   );
 };
 
