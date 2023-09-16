@@ -3,7 +3,6 @@ import axios from "axios";
 
 class BackendService {
     getActiveBusInfo = () => {
-        console.log("API called")
         return axios.get("http://localhost:8080/activeBusInfo")
     }
 

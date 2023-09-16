@@ -8,12 +8,6 @@ import { Grid } from '@mui/material';
 
 function App() {
 
-  useEffect(() => {
-    BackendService.getActiveBusInfo().then((response) => {
-      console.log(response.data);
-    })
-  }, []);
-
   return (
     <Box sx={{ width: "100vw", height: "100vh", overflow: "clip" }}>
       <Grid container columns={12} direction={"row"} wrap='nowrap' sx={{ width: "100%", height: "100%" }}>

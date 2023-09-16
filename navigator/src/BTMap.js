@@ -1,6 +1,5 @@
 import { GoogleMap, MarkerF, useLoadScript, PolylineF } from "@react-google-maps/api";
 import { useMemo, useState, useEffect, useRef } from "react";
-import { useMemo, useState, useEffect, useRef } from "react";
 import BackendService from "./BackendService.js";
 
 import "./App.css";
@@ -28,11 +27,6 @@ const App = () => {
     const interval = setInterval(() => {
       BackendService.getActiveBusInfo().then((response) => {
         setBuses(response.data.data);
-        console.log(busToStop);
-        //use buses[x].states[0] to get direction, speed, capacity, passengers, lat, long
-        if (response.data.data.length !== busPrevLength) {
-          createBusRoutes(response.data.data);
-        }
       }
       );
     }, 5000)

@@ -12,12 +12,6 @@ function TransitSelector({ options }) {
 
     const [selectedTransitLines, setSelectedTransitLines] = useState([])
 
-    useEffect(() => {
-        console.log(selectedTransitLines);
-    }, [selectedTransitLines]
-    ); // useEffect to test that autocompletes are set up and also to make sure I remember! 
-
-
     return (
         <Grid container item xs={"auto"} columns={10} direction={"column"} wrap='nowrap' sx={{ mx: 1, zIndex: 100 }}>
             <Grid item xs={1}>
