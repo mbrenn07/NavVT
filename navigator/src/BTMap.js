@@ -1,5 +1,5 @@
 import { GoogleMap, MarkerF, useLoadScript, PolylineF } from "@react-google-maps/api";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import BackendService from "./BackendService.js";
 
 import "./App.css";
@@ -17,7 +17,6 @@ const App = () => {
   useEffect(() => {
     BackendService.getActiveBusInfo().then((response) => {
       setBuses(response.data.data);
-      //use buses[x].states[0] to get direction, speed, capacity, passengers, lat, long
       createBusRoutes(response.data.data);
     }
     );
@@ -25,7 +24,7 @@ const App = () => {
       BackendService.getActiveBusInfo().then((response) => {
         let busPrevLength = buses.length;
         setBuses(response.data.data);
-        console.log(stopCodeToBus);
+        console.log(busToStop);
         //use buses[x].states[0] to get direction, speed, capacity, passengers, lat, long
         if (response.data.data.length !== busPrevLength) {
           createBusRoutes(response.data.data);
@@ -37,6 +36,8 @@ const App = () => {
   }, [])
 
   const createBusRoutes = (newBuses) => {
+    stopCodeToBus.length = 0;
+    busToStop.length = 0;
     newBuses.forEach((bus) => {
       BackendService.getBusRoute(bus.patternName)
       .then((data) => {
@@ -80,6 +81,14 @@ const App = () => {
                   }} />)
             })
           )}
+          {/* Put routes.map here to render bus stop marker data */}
+          {/* {busToStop.length > 0 && (
+            busToStop.map((bus, i) => {
+              return (
+                <MarkerF key={i} position={{ lat: b.states[0].latitude , lng: b.states[0].longitude }} />
+              )
+            })
+          )} */}
 
           {/* <MarkerF position={{ lat: 37.2269965, lng: -80.4113475 }} 
           icon = {{url: require('./navigation.svg').default,}}/>
