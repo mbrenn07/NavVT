@@ -99,6 +99,30 @@ const App = () => {
     setIsOpen(true);
   };
 
+  const hex2 = (c) => {
+    c = Math.round(c);
+    if (c < 0) c = 0;
+    if (c > 255) c = 255;
+
+    var s = c.toString(16);
+    if (s.length < 2) s = "0" + s;
+
+    return s;
+  }
+
+  const darkenColor = (col, light) => {
+
+    let r = parseInt(col.substr(0, 2), 16);
+    let g = parseInt(col.substr(2, 2), 16);
+    let b = parseInt(col.substr(4, 2), 16);
+
+    r = (1 - light) * r + light * 255;
+    g = (1 - light) * g + light * 255;
+    b = (1 - light) * b + light * 255;
+
+    return hex2(r) + hex2(g) + hex2(b);
+  }
+
   return (
     <Grid container columns={12} direction={"row"} wrap='nowrap' sx={{ width: "100%", height: "100%" }}>
       <Grid item xs={true} sx={{ width: "100%", height: "100%" }}>
@@ -128,17 +152,16 @@ const App = () => {
               else {
                 return <></>
               }
-              console.log(routeIds)
               let xyz = 'data:image/svg+xml;utf-8, \
               <svg width="20" height="20" viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg"> \
                   <defs><linearGradient id="mygx"> \
-                      <stop offset="20%" stop-color="%23'+ busToColor[routeIds[2 % routeIds.length]].substring(1) + '" /> \
-                      <stop offset="25%" stop-color="%23'+ busToColor[routeIds[2 % routeIds.length]].substring(1) + '"/> \
-                      <stop offset="25%" stop-color="%23'+ busToColor[routeIds[0 % routeIds.length]].substring(1) + '"/> \
-                      <stop offset="50%" stop-color="%23'+ busToColor[routeIds[0 % routeIds.length]].substring(1) + '"/> \
-                      <stop offset="50%" stop-color="%23'+ busToColor[routeIds[3 % routeIds.length]].substring(1) + '"/> \
-                      <stop offset="70%" stop-color="%23'+ busToColor[routeIds[3 % routeIds.length]].substring(1) + '"/> \
-                      <stop offset="70%" stop-color="%23'+ busToColor[routeIds[1 % routeIds.length]].substring(1) + '"/> \
+                      <stop offset="20%" stop-color="%23'+ (val.stop.isTimePoint === "Y" ? darkenColor(busToColor[routeIds[2 % routeIds.length]].substring(1), .5) : busToColor[routeIds[2 % routeIds.length]].substring(1)) + '" /> \
+                      <stop offset="25%" stop-color="%23'+ (val.stop.isTimePoint === "Y" ? darkenColor(busToColor[routeIds[2 % routeIds.length]].substring(1), .5) : busToColor[routeIds[2 % routeIds.length]].substring(1)) + '"/> \
+                      <stop offset="25%" stop-color="%23'+ (val.stop.isTimePoint === "Y" ? darkenColor(busToColor[routeIds[0 % routeIds.length]].substring(1), .5) : busToColor[routeIds[0 % routeIds.length]].substring(1)) + '"/> \
+                      <stop offset="50%" stop-color="%23'+ (val.stop.isTimePoint === "Y" ? darkenColor(busToColor[routeIds[0 % routeIds.length]].substring(1), .5) : busToColor[routeIds[0 % routeIds.length]].substring(1)) + '"/> \
+                      <stop offset="50%" stop-color="%23'+ (val.stop.isTimePoint === "Y" ? darkenColor(busToColor[routeIds[3 % routeIds.length]].substring(1), .5) : busToColor[routeIds[3 % routeIds.length]].substring(1)) + '"/> \
+                      <stop offset="70%" stop-color="%23'+ (val.stop.isTimePoint === "Y" ? darkenColor(busToColor[routeIds[3 % routeIds.length]].substring(1), .5) : busToColor[routeIds[3 % routeIds.length]].substring(1)) + '"/> \
+                      <stop offset="70%" stop-color="%23'+ (val.stop.isTimePoint === "Y" ? darkenColor(busToColor[routeIds[1 % routeIds.length]].substring(1), .5) : busToColor[routeIds[1 % routeIds.length]].substring(1)) + '"/> \
                   </linearGradient></defs> \
                   <path fill="url(%23mygx)" stroke-width="1.5" d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z"></path> \
                   </svg>';
