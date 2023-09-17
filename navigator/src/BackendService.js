@@ -3,7 +3,7 @@ import axios from "axios";
 
 class BackendService {
     getActiveBusInfo = () => {
-        return axios.get("http://localhost:8080/activeBusInfo")
+        return axios.get("http://localhost:8080/activeBusInfo") 
     }
 
     getInitialBusInfo = () => {
