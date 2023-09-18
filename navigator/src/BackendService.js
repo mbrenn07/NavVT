@@ -3,16 +3,16 @@ import axios from "axios";
 
 class BackendService {
     getActiveBusInfo = () => {
-        return axios.get("http://localhost:8080/activeBusInfo") 
+        return axios.get("https://navvt-ujuh2f4o4a-uk.a.run.app:8080/activeBusInfo") 
     }
 
     getInitialBusInfo = () => {
-        return axios.get("http://localhost:8080/initialBusInfo")
+        return axios.get("https://navvt-ujuh2f4o4a-uk.a.run.app:8080/initialBusInfo")
     }
 
     getBusRoute = (busName) => {
         const formattedBusName = busName.replaceAll(" ", "%20");
-        return axios.get("http://localhost:8080/busRoute/" + formattedBusName)
+        return axios.get("https://navvt-ujuh2f4o4a-uk.a.run.app:8080/busRoute/" + formattedBusName)
     }
 }
 
