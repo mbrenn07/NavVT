@@ -133,6 +133,7 @@ const App = () => {
             mapContainerClassName="map-container"
             center={center}
             zoom={14}
+            options={{fullscreenControl: false}}
           >
             {stopCodeToBus && Object.values(stopCodeToBus).map((val, i) => {
               let routeIds = [];
