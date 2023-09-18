@@ -43,9 +43,7 @@ const App = () => {
         setBuses(response.data.data);
         response.data.data.forEach((bus) => {
           BackendService.getRouteTimes(bus.gtfsTripId).then((data) => {
-            // console.log(data);
-            // console.log(xmlToJSON.parseString(data.data).DocumentElement[0][bus.gtfsTripId]);
-            busToTimes[bus.routeId] = xmlToJSON.parseString(data.data).DocumentElement[0][bus.gtfsTripId];
+            busToTimes[bus.routeId] = Object.values(xmlToJSON.parseString(data.data).DocumentElement[0])[0];
             setBusToTimes({ ...busToTimes });
           }).catch((e) => console.error(e));
         });

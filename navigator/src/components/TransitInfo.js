@@ -18,8 +18,6 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 function TransitInfo({ selectedTransitLines, busToColor, busToStop, busToTimes }) {
 
-    console.log(busToTimes);
-
     return (
         <Box sx={{ overflow: "auto", height: "100%" }}>
             {selectedTransitLines.map((option, index) => (
