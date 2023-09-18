@@ -18,6 +18,8 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 
 function TransitInfo({ selectedTransitLines, busToColor, busToStop, busToTimes }) {
 
+    console.log(busToTimes);
+
     return (
         <Box sx={{ overflow: "auto", height: "100%" }}>
             {selectedTransitLines.map((option, index) => (
@@ -34,13 +36,13 @@ function TransitInfo({ selectedTransitLines, busToColor, busToStop, busToTimes }
                         {busToStop[option] && (
                             <Timeline position="alternate-reverse">
                                 {Array.from(busToStop[option]).map((stop, index) => {
-                                    if (busToTimes[option][index]) {
+                                    if (busToTimes[option]?.[index]?.CalculatedDepartureTime) {
                                         const time = new Date(busToTimes[option][index].CalculatedDepartureTime[0]["_text"]);
                                         const adjustedTime = new Date(time.getTime() + (0 * 60 * 60 * 1000));
                                         return (
                                             <TimelineItem>
                                                 <TimelineOppositeContent color="text.secondary">
-                                                    {(adjustedTime.getHours() % 12 === 0 ? "12" : adjustedTime.getHours() % 12) + ":" + adjustedTime.getMinutes() + (adjustedTime.getHours() >= 12 ? " PM" : " AM")}
+                                                    {(adjustedTime.getHours() % 12 === 0 ? "12" : adjustedTime.getHours() % 12) + ":" + (adjustedTime.getMinutes() < 10 ? "0" : "") + adjustedTime.getMinutes() + (adjustedTime.getHours() >= 12 ? " PM" : " AM")}
                                                 </TimelineOppositeContent>
                                                 <TimelineSeparator>
                                                     {stop.isTimePoint === "Y" && (
