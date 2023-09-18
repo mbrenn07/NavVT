@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@CrossOrigin(origins = "https://navigator3-ujuh2f4o4a-uk.a.run.app/")
+@CrossOrigin(origins = "*")
 @Controller
 public class PollBTTransit {
 
