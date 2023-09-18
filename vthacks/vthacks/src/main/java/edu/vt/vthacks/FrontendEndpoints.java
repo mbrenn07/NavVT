@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://navigator3-ujuh2f4o4a-uk.a.run.app/")
 @Controller
 public class FrontendEndpoints {
 
