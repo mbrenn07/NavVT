@@ -14,6 +14,10 @@ class BackendService {
         const formattedBusName = busName.replaceAll(" ", "%20");
         return axios.get("https://navvt-ujuh2f4o4a-uk.a.run.app/busRoute/" + formattedBusName)
     }
+
+    getRouteTimes = (tripId) => {
+        return axios.get("http://localhost:8080/routeTimes/" + tripId)
+    }
 }
 
 export default new BackendService();

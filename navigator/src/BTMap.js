@@ -2,9 +2,10 @@ import { GoogleMap, MarkerF, useLoadScript, PolylineF, InfoWindowF } from "@reac
 import { useMemo, useState, useEffect, useRef } from "react";
 import BackendService from "./BackendService.js";
 import { Grid } from '@mui/material';
-import TransitSelector from "./components/TransitSelector.js"
-
+import TransitSelector from "./components/TransitSelector.js";
+import xmlToJSON from "./components/xmlToJSON.js";
 import "./App.css";
+
 
 const App = () => {
   const { isLoaded } = useLoadScript({
@@ -17,6 +18,7 @@ const App = () => {
   const [stopCodeToBus, setStopCodeToBus] = useState({});
   const [busLines, setBusLines] = useState([]);
   const [busToColor, setBusToColor] = useState({});
+  const [busToTimes, setBusToTimes] = useState({});
   const [displayBuses, setDisplayBuses] = useState([]);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -39,11 +41,18 @@ const App = () => {
     BackendService.getActiveBusInfo()
       .then((response) => {
         setBuses(response.data.data);
+        response.data.data.forEach((bus) => {
+          BackendService.getRouteTimes(bus.gtfsTripId).then((data) => {
+            busToTimes[bus.routeId] = xmlToJSON.parseString(data.data).DocumentElement[0][bus.gtfsTripId];
+            setBusToTimes({ ...busToTimes });
+          }).catch((e) => console.error(e));
+        });
         setDisplayBuses(response.data.data.map((b) => {
           return b.routeId;
         }))
         createBusRoutes(response.data.data);
       });
+
 
     const interval = setInterval(() => {
       BackendService.getActiveBusInfo().then((response) => {
@@ -53,10 +62,6 @@ const App = () => {
     }, 5000)
     return () => clearInterval(interval);
   }, [])
-
-  // useEffect(() => {
-  //   createBusRoutes(buses.filter(b => displayBuses.includes(b.routeId)));
-  // }, [displayBuses]);
 
   const createBusRoutes = (newBuses) => {
     stopCodeToBus.length = 0;
@@ -133,7 +138,7 @@ const App = () => {
             mapContainerClassName="map-container"
             center={center}
             zoom={14}
-            options={{fullscreenControl: false}}
+            options={{ fullscreenControl: false }}
           >
             {stopCodeToBus && Object.values(stopCodeToBus).map((val, i) => {
               let routeIds = [];
@@ -218,6 +223,7 @@ const App = () => {
         buses={buses}
         busToColor={busToColor}
         busToStop={busToStop}
+        busToTimes={busToTimes}
         displayBuses={displayBuses}
         setDisplayBuses={setDisplayBuses}
         createBusRoutes={createBusRoutes}
