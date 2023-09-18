@@ -36,7 +36,7 @@ function TransitInfo({ selectedTransitLines, busToColor, busToStop, busToTimes }
                                 {Array.from(busToStop[option]).map((stop, index) => {
                                     if (busToTimes[option][index]) {
                                         const time = new Date(busToTimes[option][index].CalculatedDepartureTime[0]["_text"]);
-                                        const adjustedTime = new Date(time.getTime() + (2 * 60 * 60 * 1000));
+                                        const adjustedTime = new Date(time.getTime() + (0 * 60 * 60 * 1000));
                                         return (
                                             <TimelineItem>
                                                 <TimelineOppositeContent color="text.secondary">
