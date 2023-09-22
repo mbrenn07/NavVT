@@ -18,22 +18,18 @@ function TransitSelector({ options, buses, busToTimes, busToColor, busToStop, di
                     <MenuIcon />
                 </IconButton>
             )}
-            {!menuHidden && (<Grid container item xs={2.5} columns={10} overflowX={'auto'} direction={"column"} wrap='nowrap' sx={{ mx: 1, zIndex: 100 }}>
+            {!menuHidden && (<Grid container item xs={"auto"} columns={10} direction={"column"} wrap='nowrap' sx={{ mx: 1, zIndex: 100 }}>
                 <Grid item xs={1}>
                     <Stack direction="row" sx={{ my: 0.5, display: "flex", maxWidth: "100%" }} >
-                        <IconButton onClick={() => setMenuHidden(!menuHidden)} sx={{ mb: -1, mx: -1 }}>
+                        <IconButton onClick={() => setMenuHidden(!menuHidden)} sx={{ mt: 2, mx: -1, mr: 0, height: 40 }}>
                             <MenuIcon />
                         </IconButton>
                         <Autocomplete
                             multiple
                             id="transit-selector"
                             fullWidth
-                            sx={{
-                                maxWidth: '100%',
-                                my: 1,
-                                flex: 1,
-                            }}
-                            limitTags={3}
+                            sx={{ my: 1 }}
+                            limitTags={2}
                             options={options}
                             onChange={(event, newValue) => {
                                 setSelectedTransitLines(newValue);
