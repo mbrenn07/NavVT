@@ -3,7 +3,7 @@ import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import TransitInfo from './TransitInfo';
-import { Grid, IconButton } from '@mui/material';
+import { Grid, IconButton, Stack } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
 function TransitSelector({ options, buses, busToTimes, busToColor, busToStop, displayBuses, setDisplayBuses, createBusRoutes }) {
@@ -18,25 +18,32 @@ function TransitSelector({ options, buses, busToTimes, busToColor, busToStop, di
                     <MenuIcon />
                 </IconButton>
             )}
-            {!menuHidden && (<Grid container item xs={"auto"} columns={10} direction={"column"} wrap='nowrap' sx={{ mx: 1, zIndex: 100 }}>
+            {!menuHidden && (<Grid container item xs={2.5} columns={10} overflowX={'auto'} direction={"column"} wrap='nowrap' sx={{ mx: 1, zIndex: 100 }}>
                 <Grid item xs={1}>
-                    <IconButton onClick={() => setMenuHidden(!menuHidden)} sx={{ mb: -1, mx: -1 }}>
-                        <MenuIcon />
-                    </IconButton>
-                    <Autocomplete
-                        multiple
-                        id="transit-selector"
-                        sx={{ my: 1 }}
-                        limitTags={3}
-                        options={options}
-                        onChange={(event, newValue) => {
-                            setSelectedTransitLines(newValue);
-                            setDisplayBuses(newValue);
-                            createBusRoutes(newValue.length === 0 ? buses : buses.filter(b => newValue.includes(b.routeId)));
-                        }}
-                        value={selectedTransitLines}
-                        renderInput={(params) => <TextField {...params} label="Filter Transit Line(s)" />}
-                    />
+                    <Stack direction="row" sx={{ my: 0.5, display: "flex", maxWidth: "100%" }} >
+                        <IconButton onClick={() => setMenuHidden(!menuHidden)} sx={{ mb: -1, mx: -1 }}>
+                            <MenuIcon />
+                        </IconButton>
+                        <Autocomplete
+                            multiple
+                            id="transit-selector"
+                            fullWidth
+                            sx={{
+                                maxWidth: '100%',
+                                my: 1,
+                                flex: 1,
+                            }}
+                            limitTags={3}
+                            options={options}
+                            onChange={(event, newValue) => {
+                                setSelectedTransitLines(newValue);
+                                setDisplayBuses(newValue);
+                                createBusRoutes(newValue.length === 0 ? buses : buses.filter(b => newValue.includes(b.routeId)));
+                            }}
+                            value={selectedTransitLines}
+                            renderInput={(params) => <TextField {...params} label="Filter Transit Line(s)" />}
+                        />
+                    </Stack>
                 </Grid>
                 <Grid item sx={{ width: "100%", height: "100%" }}>
                     <Box sx={{ backgroundColor: "#75787b", width: "100%", maxWidth: 350, height: "calc(100%)", mt: -.5, zIndex: 99, position: "relative" }}>

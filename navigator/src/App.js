@@ -17,7 +17,7 @@ function App() {
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <Box sx={{ width: "100vw", height: "100vh", overflow: "clip", backgroundColor: "#75787b" }}>
+      <Box sx={{ maxWidth: "100vw", height: "100vh", overflow: "clip", backgroundColor: "#75787b" }}>
         <BTMap />
       </Box>
     </ThemeProvider>
