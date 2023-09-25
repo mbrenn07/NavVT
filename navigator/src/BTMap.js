@@ -9,7 +9,7 @@ import "./App.css";
 
 const App = () => {
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyD_jBYKIilrDpKYvAf1LAeBLoSC2ciauAI",
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY,
   });
   const center = useMemo(() => ({ lat: 37.228198, lng: -80.423329 }), []);
 
