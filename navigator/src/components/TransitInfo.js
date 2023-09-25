@@ -60,7 +60,7 @@ function TransitInfo({ selectedTransitLines, busToColor, busToStop, tripToTimes,
                                                                     busWasAtStop = true
                                                                 }
                                                                 return (
-                                                                    <TimelineItem>
+                                                                    <TimelineItem key={stop + index + busWasAtStop}>
                                                                         <TimelineOppositeContent color="text.secondary">
                                                                             {(adjustedTime.getHours() % 12 === 0 ? "12" : adjustedTime.getHours() % 12) + ":" + (adjustedTime.getMinutes() < 10 ? "0" : "") + adjustedTime.getMinutes() + (adjustedTime.getHours() >= 12 ? " PM" : " AM")}
                                                                         </TimelineOppositeContent>
