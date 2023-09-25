@@ -1,4 +1,3 @@
-// import React from "react";
 import axios from "axios";
 
 class BackendService {
@@ -21,6 +20,14 @@ class BackendService {
 
     getTripIds = (busName) => {
         return axios.get("https://navvt-ujuh2f4o4a-uk.a.run.app/tripIds/" + busName)
+    }
+
+    getNearestStop = (lat, lng) => {
+        return axios.get("http://localhost:8080/nearestStop/" + lat + "/" + lng)
+    }
+
+    getStopDepartures = (stopId) => {
+        return axios.get("http://localhost:8080/getStopDepartures/" + stopId)
     }
 }
 

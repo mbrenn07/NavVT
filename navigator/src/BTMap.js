@@ -1,9 +1,10 @@
 import { GoogleMap, MarkerF, useLoadScript, PolylineF, InfoWindowF } from "@react-google-maps/api";
 import { useMemo, useState, useEffect, useRef } from "react";
 import BackendService from "./BackendService.js";
-import { Grid, Box, Stack } from '@mui/material';
+import { Grid, Box, Stack, Fab } from '@mui/material';
 import TransitSelector from "./components/TransitSelector.js";
 import xmlToJSON from "./components/xmlToJSON.js";
+import NavigationIcon from "@mui/icons-material/Navigation.js"
 import "./App.css";
 
 
@@ -22,11 +23,44 @@ const App = () => {
   const [tripToTimes, setTripToTimes] = useState({});
   const [displayBuses, setDisplayBuses] = useState([]);
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [infoWindowData, setInfoWindowData] = useState();
+  const [infoWindowData, setInfoWindowData] = useState({});
+
+  const [closestStopPopupData, setClosestStopPopupData] = useState({
+    open: false
+  });
 
   const busLength = useRef(0);
   busLength.current = 0;
+
+  const getNearestStop = () => {
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        BackendService.getNearestStop(position.coords.latitude, position.coords.longitude)
+          .then((data) => {
+            const parsedXML = Object.values(xmlToJSON.parseString(data.data).DocumentElement[0])[0];
+            BackendService.getStopDepartures(parsedXML[0].StopCode[0]["_text"])
+              .then((data2) => {
+                const routesJSON = Object.values(xmlToJSON.parseString(data2.data).DocumentElement[0])[0];
+                closestStopPopupData.nextBuses = [];
+                routesJSON.forEach((route, index) => {
+                  if (index > 2) {
+                    return;
+                  }
+                  closestStopPopupData.nextBuses.push({ name: route.RouteShortName[0]["_text"], time: new Date(route.AdjustedDepartureTime[0]["_text"]) });
+                })
+                closestStopPopupData.lat = parsedXML[0].Latitude[0]["_text"];
+                closestStopPopupData.lng = parsedXML[0].Longitude[0]["_text"];
+                closestStopPopupData.name = parsedXML[0].StopName[0]["_text"];
+                closestStopPopupData.stopCode = parsedXML[0].StopCode[0]["_text"];
+                closestStopPopupData.open = true;
+                setClosestStopPopupData({ ...closestStopPopupData });
+              })
+              .catch((e) => console.error(e));
+          })
+          .catch((e) => console.error(e));
+      });
+    }
+  };
 
   useEffect(() => {
     BackendService.getInitialBusInfo()
@@ -35,24 +69,24 @@ const App = () => {
         Object.keys(busInfoObj).forEach((key) => {
           busToColor[key] = "#" + busInfoObj[key][0].routeColor;
           BackendService.getTripIds(key)
-          .then((data) => {
-            const allTripStops = Object.values(xmlToJSON.parseString(data.data).DocumentElement[0])[0];
-            const tempBusToTrips = new Set();
-            allTripStops.forEach((tripStop) => {
-              tempBusToTrips.add(tripStop.TripID[0]["_text"]);
-            });
-            busToTrips[key] = Array.from(tempBusToTrips);
-            setBusToTrips({ ...busToTrips });
-            busToTrips[key].forEach((tripId) => {
-              BackendService.getRouteTimes(tripId)
-              .then((data) => {
-                tripToTimes[tripId] = Object.values(xmlToJSON.parseString(data.data).DocumentElement[0])[0];
-                setTripToTimes({ ...tripToTimes });
-              })
-              .catch((e) => console.error(e));
-            });
-          })
-          .catch((e) => console.error(e));
+            .then((data) => {
+              const allTripStops = Object.values(xmlToJSON.parseString(data.data).DocumentElement[0])[0];
+              const tempBusToTrips = new Set();
+              allTripStops.forEach((tripStop) => {
+                tempBusToTrips.add(tripStop.TripID[0]["_text"]);
+              });
+              busToTrips[key] = Array.from(tempBusToTrips);
+              setBusToTrips({ ...busToTrips });
+              busToTrips[key].forEach((tripId) => {
+                BackendService.getRouteTimes(tripId)
+                  .then((data) => {
+                    tripToTimes[tripId] = Object.values(xmlToJSON.parseString(data.data).DocumentElement[0])[0];
+                    setTripToTimes({ ...tripToTimes });
+                  })
+                  .catch((e) => console.error(e));
+              });
+            })
+            .catch((e) => console.error(e));
         });
         setBusToColor({ ...busToColor });
       })
@@ -115,13 +149,23 @@ const App = () => {
   }
 
   const handleMarkerClick = (index, bus) => {
-    setInfoWindowData({ id: "Bus " + index, data: bus.routeId + ": " + bus.percentOfCapacity + "% Full" });
-    setIsOpen(true);
+    setInfoWindowData({ id: "Bus " + index, data: bus.routeId + ": " + bus.percentOfCapacity + "% Full", open: true });
   };
 
   const handleStopMarkerClick = (index, val) => {
-    setInfoWindowData({ id: "Stop " + index, row1: (val.stop.isTimePoint == "Y" ? "Timecheck\n" : null), row2: val.stop.patternPointName + " (" + val.stop.stopCode + ")" });
-    setIsOpen(true);
+    BackendService.getStopDepartures(val.stop.stopCode)
+      .then((data) => {
+        const routesJSON = Object.values(xmlToJSON.parseString(data.data).DocumentElement[0])[0];
+        infoWindowData.nextBuses = [];
+        routesJSON.forEach((route, index) => {
+          if (index > 2) {
+            return;
+          }
+          infoWindowData.nextBuses.push({ name: route.RouteShortName[0]["_text"], time: new Date(route.AdjustedDepartureTime[0]["_text"]) });
+        })
+        setInfoWindowData({ open: true, id: "Stop " + index, row1: (val.stop.isTimePoint == "Y" ? "Timecheck\n" : null), row2: val.stop.patternPointName + " (" + val.stop.stopCode + ")", nextBuses: infoWindowData.nextBuses });
+      })
+      .catch((e) => console.error(e));
   };
 
   const hex2 = (c) => {
@@ -154,31 +198,69 @@ const App = () => {
         {!isLoaded ? (
           <h1>Loading...</h1>
         ) : (
-          <GoogleMap
-            mapContainerClassName="map-container"
-            center={center}
-            zoom={14}
-            options={{ fullscreenControl: false }}
-          >
-            {stopCodeToBus && Object.values(stopCodeToBus).map((val, i) => {
-              let routeIds = [];
-              if (val.buses) {
-                let buses = Array.from(val.buses);
-                let busFound = false;
-                buses.forEach(b => {
-                  if ((displayBuses.includes(b) || displayBuses.length === 0)) {
-                    routeIds.push(b);
-                    busFound = true;
+          <>
+            <Fab variant="extended" sx={{ position: "absolute", zIndex: 101, top: "100%", transform: "translate(5%, -110%)" }}
+              onClick={() => {
+                getNearestStop();
+              }}
+            >
+              <NavigationIcon sx={{ mr: 1 }} />
+              Find Nearest Stop
+            </Fab>
+
+            <GoogleMap
+              mapContainerClassName="map-container"
+              center={center}
+              zoom={14}
+              options={{ fullscreenControl: false }}
+            >
+              {closestStopPopupData.open && (
+                <InfoWindowF
+                  onCloseClick={() => {
+                    closestStopPopupData.open = false;
+                    setClosestStopPopupData({ ...closestStopPopupData });
+                  }}
+                  position={{ lat: parseFloat(closestStopPopupData.lat), lng: parseFloat(closestStopPopupData.lng) }}
+                >
+                  <Stack sx={{ maxWidth: 120 }}>
+                    <Box sx={{ textAlign: "center", mb: .5 }}>
+                      <b>Nearest Stop:</b>
+                    </Box>
+                    <Box>
+                      {closestStopPopupData.name + " (" + closestStopPopupData.stopCode + ")"}
+                    </Box>
+                    {closestStopPopupData.nextBuses && (
+                      <Box sx={{ textAlign: "center", mb: .5, mt: 1 }}>
+                        <b>Next Buses:</b>
+                      </Box>
+                    )}
+                    {closestStopPopupData.nextBuses?.map((bus) => (
+                      <Box sx={{ textAlign: "center" }}>
+                        {bus.name + " (" + (bus.time.getHours() % 12 === 0 ? "12" : bus.time.getHours() % 12) + ":" + (bus.time.getMinutes() < 10 ? "0" : "") + bus.time.getMinutes() + (bus.time.getHours() >= 12 ? " PM" : " AM") + ")"}
+                      </Box>
+                    ))}
+                  </Stack>
+                </InfoWindowF>
+              )}
+              {stopCodeToBus && Object.values(stopCodeToBus).map((val, i) => {
+                let routeIds = [];
+                if (val.buses) {
+                  let buses = Array.from(val.buses);
+                  let busFound = false;
+                  buses.forEach(b => {
+                    if ((displayBuses.includes(b) || displayBuses.length === 0)) {
+                      routeIds.push(b);
+                      busFound = true;
+                    }
+                  });
+                  if (!busFound) {
+                    return <></>;
                   }
-                });
-                if (!busFound) {
-                  return <></>;
                 }
-              }
-              else {
-                return <></>
-              }
-              let xyz = 'data:image/svg+xml;utf-8, \
+                else {
+                  return <></>
+                }
+                let xyz = 'data:image/svg+xml;utf-8, \
               <svg ' + (val.stop.isTimePoint === "Y" ? 'width="30" height="30"' : 'width="20" height="20"') + ' viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg"> \
                   <defs><linearGradient id="mygx"> \
                       <stop offset="20%" stop-color="%23'+ (val.stop.isTimePoint === "N" ? darkenColor(busToColor[routeIds[2 % routeIds.length]].substring(1), .2) : busToColor[routeIds[2 % routeIds.length]].substring(1)) + '" /> \
@@ -191,78 +273,88 @@ const App = () => {
                   </linearGradient></defs> \
                   <path fill="url(%23mygx)" stroke-width="1.5" d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z"></path> \
                   </svg>';
-              return (val.stop && (
-                <MarkerF
-                  key={val.stop.stopCode + routeIds[0] + routeIds[1] + routeIds[2] + routeIds[3]}
-                  onClick={() => {
-                    handleStopMarkerClick(i, val);
-                  }}
-                  position={{ lat: parseFloat(val.stop.latitude), lng: parseFloat(val.stop.longitude) }}
-                  icon={{
-                    url: xyz,
-                  }}>
-                  {isOpen && infoWindowData?.id === "Stop " + i && (
-                    <InfoWindowF
-                      onCloseClick={() => {
-                        setIsOpen(false);
-                      }}
-                      position={{ lat: parseFloat(val.stop.latitude), lng: parseFloat(val.stop.longitude) }}
-                    >
-                      <Stack sx={{maxWidth: 120}}>
-                        {infoWindowData.row1 && (
-                        <Box sx={{textAlign: "center", mb: .5}}>
-                          <b>{infoWindowData.row1}</b>
-                        </Box>
-                        )}
-                        <Box>
-                          {infoWindowData.row2}
-                        </Box>
-                      </Stack>
-                    </InfoWindowF>)}
-                </MarkerF>)
-              )
-
-            })
-            }
-            {busLines}
-            {buses.length > 0 && (
-              buses.map((bus, i) => {
-                if (!displayBuses.includes(bus.routeId) && displayBuses.length !== 0) {
-                  return <></>
-                }
-                return (
-                  <MarkerF onClick={() => {
-                    handleMarkerClick(i, bus);
-                  }}
-                    key={bus.states[0].direction + bus.states[0].latitude + bus.states[0].longitude} position={{ lat: bus.states[0].latitude, lng: bus.states[0].longitude }} //NOSONAR
-                    icon={
-                      {
-                        path: "M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z",
-                        scale: 1.4,
-                        strokeColor: "#000000",
-                        fillColor: busToColor[bus.routeId],
-                        fillOpacity: 1,
-                        anchor: { x: 10, y: 10 },
-                        rotation: -45 + parseInt(bus.states[0].direction),
-                      }} >
-                    {isOpen && infoWindowData?.id === "Bus " + i && (
+                return (val.stop && (
+                  <MarkerF
+                    key={val.stop.stopCode + routeIds[0] + routeIds[1] + routeIds[2] + routeIds[3]}
+                    onClick={() => {
+                      handleStopMarkerClick(i, val);
+                    }}
+                    position={{ lat: parseFloat(val.stop.latitude), lng: parseFloat(val.stop.longitude) }}
+                    icon={{
+                      url: xyz,
+                    }}>
+                    {infoWindowData.open && infoWindowData?.id === "Stop " + i && (
                       <InfoWindowF
-                        position={{ lat: bus.states[0].latitude, lng: bus.states[0].longitude }}
                         onCloseClick={() => {
-                          setIsOpen(false);
+                          infoWindowData.open = false;
+                          setInfoWindowData({ ...infoWindowData });
                         }}
+                        position={{ lat: parseFloat(val.stop.latitude), lng: parseFloat(val.stop.longitude) }}
                       >
-                        <>
-                          {infoWindowData.data}
-                        </>
+                        <Stack sx={{ maxWidth: 120 }}>
+                          {infoWindowData.row1 && (
+                            <Box sx={{ textAlign: "center", mb: .5 }}>
+                              <b>{infoWindowData.row1}</b>
+                            </Box>
+                          )}
+                          <Box>
+                            {infoWindowData.row2}
+                          </Box>
+                          {closestStopPopupData.nextBuses && (
+                            <Box sx={{ textAlign: "center", mb: .5, mt: 1 }}>
+                              <b>Next Buses:</b>
+                            </Box>
+                          )}
+                          {infoWindowData.nextBuses?.map((bus) => (
+                            <Box sx={{ textAlign: "center" }}>
+                              {bus.name + " (" + (bus.time.getHours() % 12 === 0 ? "12" : bus.time.getHours() % 12) + ":" + (bus.time.getMinutes() < 10 ? "0" : "") + bus.time.getMinutes() + (bus.time.getHours() >= 12 ? " PM" : " AM") + ")"}
+                            </Box>
+                          ))}
+                        </Stack>
                       </InfoWindowF>)}
-                  </MarkerF>
+                  </MarkerF>)
                 )
               })
-            )}
-
-          </GoogleMap>
-
+              }
+              {busLines}
+              {buses.length > 0 && (
+                buses.map((bus, i) => {
+                  if (!displayBuses.includes(bus.routeId) && displayBuses.length !== 0) {
+                    return <></>
+                  }
+                  return (
+                    <MarkerF onClick={() => {
+                      handleMarkerClick(i, bus);
+                    }}
+                      key={bus.states[0].direction + bus.states[0].latitude + bus.states[0].longitude} position={{ lat: bus.states[0].latitude, lng: bus.states[0].longitude }} //NOSONAR
+                      icon={
+                        {
+                          path: "M21 3L3 10.53v.98l6.84 2.65L12.48 21h.98L21 3z",
+                          scale: 1.4,
+                          strokeColor: "#000000",
+                          fillColor: busToColor[bus.routeId],
+                          fillOpacity: 1,
+                          anchor: { x: 10, y: 10 },
+                          rotation: -45 + parseInt(bus.states[0].direction),
+                        }} >
+                      {infoWindowData.open && infoWindowData?.id === "Bus " + i && (
+                        <InfoWindowF
+                          position={{ lat: bus.states[0].latitude, lng: bus.states[0].longitude }}
+                          onCloseClick={() => {
+                            infoWindowData.open = false;
+                            setInfoWindowData({ ...infoWindowData });
+                          }}
+                        >
+                          <>
+                            {infoWindowData.data}
+                          </>
+                        </InfoWindowF>)}
+                    </MarkerF>
+                  )
+                })
+              )}
+            </GoogleMap>
+          </>
         )}
       </Grid>
       <TransitSelector
