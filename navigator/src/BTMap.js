@@ -300,7 +300,7 @@ const App = () => {
                           <Box>
                             {infoWindowData.row2}
                           </Box>
-                          {closestStopPopupData.nextBuses && (
+                          {infoWindowData.nextBuses && (
                             <Box sx={{ textAlign: "center", mb: .5, mt: 1 }}>
                               <b>Next Buses:</b>
                             </Box>
