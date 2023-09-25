@@ -18,6 +18,10 @@ class BackendService {
     getRouteTimes = (tripId) => {
         return axios.get("https://navvt-ujuh2f4o4a-uk.a.run.app/routeTimes/" + tripId)
     }
+
+    getTripIds = (busName) => {
+        return axios.get("https://navvt-ujuh2f4o4a-uk.a.run.app/tripIds/" + busName)
+    }
 }
 
 export default new BackendService();

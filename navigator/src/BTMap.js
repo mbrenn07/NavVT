@@ -18,7 +18,8 @@ const App = () => {
   const [stopCodeToBus, setStopCodeToBus] = useState({});
   const [busLines, setBusLines] = useState([]);
   const [busToColor, setBusToColor] = useState({});
-  const [busToTimes, setBusToTimes] = useState({});
+  const [busToTrips, setBusToTrips] = useState({});
+  const [tripToTimes, setTripToTimes] = useState({});
   const [displayBuses, setDisplayBuses] = useState([]);
 
   const [isOpen, setIsOpen] = useState(false);
@@ -33,20 +34,34 @@ const App = () => {
         const busInfoObj = data.data.data;
         Object.keys(busInfoObj).forEach((key) => {
           busToColor[key] = "#" + busInfoObj[key][0].routeColor;
+          BackendService.getTripIds(key)
+          .then((data) => {
+            const allTripStops = Object.values(xmlToJSON.parseString(data.data).DocumentElement[0])[0];
+            const tempBusToTrips = new Set();
+            allTripStops.forEach((tripStop) => {
+              tempBusToTrips.add(tripStop.TripID[0]["_text"]);
+            });
+            busToTrips[key] = Array.from(tempBusToTrips);
+            setBusToTrips({ ...busToTrips });
+            busToTrips[key].forEach((tripId) => {
+              BackendService.getRouteTimes(tripId)
+              .then((data) => {
+                tripToTimes[tripId] = Object.values(xmlToJSON.parseString(data.data).DocumentElement[0])[0];
+                setTripToTimes({ ...tripToTimes });
+              })
+              .catch((e) => console.error(e));
+            });
+          })
+          .catch((e) => console.error(e));
         });
         setBusToColor({ ...busToColor });
       })
       .catch((e) => console.error(e));
 
+
     BackendService.getActiveBusInfo()
       .then((response) => {
         setBuses(response.data.data);
-        response.data.data.forEach((bus) => {
-          BackendService.getRouteTimes(bus.gtfsTripId).then((data) => {
-            busToTimes[bus.routeId] = Object.values(xmlToJSON.parseString(data.data).DocumentElement[0])[0];
-            setBusToTimes({ ...busToTimes });
-          }).catch((e) => console.error(e));
-        });
         setDisplayBuses(response.data.data.map((b) => {
           return b.routeId;
         }))
@@ -255,7 +270,8 @@ const App = () => {
         buses={buses}
         busToColor={busToColor}
         busToStop={busToStop}
-        busToTimes={busToTimes}
+        busToTrips={busToTrips}
+        tripToTimes={tripToTimes}
         displayBuses={displayBuses}
         setDisplayBuses={setDisplayBuses}
         createBusRoutes={createBusRoutes}

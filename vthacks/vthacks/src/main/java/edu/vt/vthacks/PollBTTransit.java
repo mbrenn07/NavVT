@@ -114,4 +114,28 @@ public class PollBTTransit {
         return "";
     }
 
+     @GetMapping("/tripIds/{busName}")
+    @ResponseBody
+    public String getTripIds(@PathVariable("busName") String busName) throws ProtocolException {
+        try {
+            URL url = new URL(
+                "http://www.bt4uclassic.org/webservices/bt4u_webservice.asmx/GetArrivalAndDepartureTimesForRoutes?routeShortNames=" + busName + "&noOfTrips=&serviceDate=");
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            BufferedReader in = new BufferedReader(
+                new InputStreamReader(con.getInputStream()));
+            String inputLine;
+            StringBuffer content = new StringBuffer();
+            while ((inputLine = in.readLine()) != null) {
+                content.append(inputLine);
+            }
+            in.close();
+            return content.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+
 }

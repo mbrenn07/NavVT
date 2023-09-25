@@ -6,7 +6,7 @@ import TransitInfo from './TransitInfo';
 import { Grid, IconButton, Stack } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
-function TransitSelector({ options, buses, busToTimes, busToColor, busToStop, displayBuses, setDisplayBuses, createBusRoutes }) {
+function TransitSelector({ options, buses, tripToTimes, busToTrips, busToColor, busToStop, displayBuses, setDisplayBuses, createBusRoutes }) {
 
     const [selectedTransitLines, setSelectedTransitLines] = useState([]);
     const [menuHidden, setMenuHidden] = useState();
@@ -43,7 +43,7 @@ function TransitSelector({ options, buses, busToTimes, busToColor, busToStop, di
                 </Grid>
                 <Grid item sx={{ width: "100%", height: "calc(100% - 80px)" }}>
                     <Box sx={{ backgroundColor: "#75787b", width: "100%", maxWidth: 350, height: "calc(100%)", mt: -.5, zIndex: 99, position: "relative" }}>
-                        <TransitInfo buses={buses} busToTimes={busToTimes} selectedTransitLines={selectedTransitLines.length ? selectedTransitLines : options} busToColor={busToColor} busToStop={busToStop} />
+                        <TransitInfo buses={buses} busToTrips={busToTrips} tripToTimes={tripToTimes} selectedTransitLines={selectedTransitLines.length ? selectedTransitLines : options} busToColor={busToColor} busToStop={busToStop} />
                         <Box
                             component="img"
                             src="/NavVTLogo.png"
