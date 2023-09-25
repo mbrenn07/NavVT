@@ -1,1 +1,1 @@
-(cd vthacks/vthacks; ./mvnw spring-boot:run) & (cd navigator; npm start)
+(cd vthacks/vthacks; ./mvnw spring-boot:run) & (cd navigator; npm start) & (cd vthacks/vthacks; ./mvnw package)

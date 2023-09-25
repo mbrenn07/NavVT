@@ -43,7 +43,7 @@ function TransitSelector({ options, buses, busToTimes, busToColor, busToStop, di
                 </Grid>
                 <Grid item sx={{ width: "100%", height: "100%" }}>
                     <Box sx={{ backgroundColor: "#75787b", width: "100%", maxWidth: 350, height: "calc(100%)", mt: -.5, zIndex: 99, position: "relative" }}>
-                        <TransitInfo busToTimes={busToTimes} selectedTransitLines={selectedTransitLines.length ? selectedTransitLines : options} busToColor={busToColor} busToStop={busToStop} />
+                        <TransitInfo buses={buses} busToTimes={busToTimes} selectedTransitLines={selectedTransitLines.length ? selectedTransitLines : options} busToColor={busToColor} busToStop={busToStop} />
                         <Box
                             component="img"
                             src="/NavVTLogo.png"
