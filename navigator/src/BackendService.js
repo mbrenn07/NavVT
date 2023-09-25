@@ -23,11 +23,11 @@ class BackendService {
     }
 
     getNearestStop = (lat, lng) => {
-        return axios.get("http://localhost:8080/nearestStop/" + lat + "/" + lng)
+        return axios.get("https://navvt-ujuh2f4o4a-uk.a.run.app/nearestStop/" + lat + "/" + lng)
     }
 
     getStopDepartures = (stopId) => {
-        return axios.get("http://localhost:8080/getStopDepartures/" + stopId)
+        return axios.get("https://navvt-ujuh2f4o4a-uk.a.run.app/getStopDepartures/" + stopId)
     }
 }
 
