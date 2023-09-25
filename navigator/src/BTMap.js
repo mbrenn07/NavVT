@@ -212,7 +212,7 @@ const App = () => {
               mapContainerClassName="map-container"
               center={center}
               zoom={14}
-              options={{ fullscreenControl: false }}
+              options={{ fullscreenControl: false, mapTypeControl: false }}
             >
               {closestStopPopupData.open && (
                 <InfoWindowF
