@@ -41,7 +41,7 @@ function TransitSelector({ options, buses, busToTimes, busToColor, busToStop, di
                         />
                     </Stack>
                 </Grid>
-                <Grid item sx={{ width: "100%", height: "100%" }}>
+                <Grid item sx={{ width: "100%", height: "calc(100% - 80px)" }}>
                     <Box sx={{ backgroundColor: "#75787b", width: "100%", maxWidth: 350, height: "calc(100%)", mt: -.5, zIndex: 99, position: "relative" }}>
                         <TransitInfo buses={buses} busToTimes={busToTimes} selectedTransitLines={selectedTransitLines.length ? selectedTransitLines : options} busToColor={busToColor} busToStop={busToStop} />
                         <Box
