@@ -1,7 +1,7 @@
 import { GoogleMap, MarkerF, useLoadScript, PolylineF, InfoWindowF } from "@react-google-maps/api";
 import { useMemo, useState, useEffect, useRef } from "react";
 import BackendService from "./BackendService.js";
-import { Grid, Box, Stack, Fab } from '@mui/material';
+import { Grid, Box, Stack, Fab, Alert, Snackbar } from '@mui/material';
 import TransitSelector from "./components/TransitSelector.js";
 import xmlToJSON from "./components/xmlToJSON.js";
 import NavigationIcon from "@mui/icons-material/Navigation.js"
@@ -25,6 +25,7 @@ const App = () => {
   const [displayBuses, setDisplayBuses] = useState([]);
 
   const [infoWindowData, setInfoWindowData] = useState({});
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const [closestStopPopupData, setClosestStopPopupData] = useState({
     open: false
@@ -60,7 +61,7 @@ const App = () => {
           })
           .catch((e) => console.error(e));
       }, () => {
-        alert("Geolocation disabled");
+        setSnackbarOpen(true)
         setGeolocationAllowed(false);
       });
     }
@@ -107,7 +108,6 @@ const App = () => {
 
     navigator.permissions.query({ name: 'geolocation' })
       .then((data) => {
-        alert(data.state);
         if (data.state == "prompt" || data.state == "granted") {
           setGeolocationAllowed(true);
         }
@@ -220,6 +220,11 @@ const App = () => {
                 Find Nearest Stop
               </Fab>
             )}
+            <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)}>
+              <Alert onClose={() => setSnackbarOpen(false)} severity="error" sx={{ width: '100%' }}>
+                Geolocation disabled
+              </Alert>
+            </Snackbar>
             <GoogleMap
               mapContainerClassName="map-container"
               center={center}
