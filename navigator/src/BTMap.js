@@ -59,6 +59,9 @@ const App = () => {
               .catch((e) => console.error(e));
           })
           .catch((e) => console.error(e));
+      }, () => {
+        alert("Geolocation disabled");
+        setGeolocationAllowed(false);
       });
     }
   };
@@ -104,7 +107,7 @@ const App = () => {
 
     navigator.permissions.query({ name: 'geolocation' })
       .then((data) => {
-        console.log(data);
+        alert(data.state);
         if (data.state == "prompt" || data.state == "granted") {
           setGeolocationAllowed(true);
         }
