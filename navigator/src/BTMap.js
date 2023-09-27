@@ -15,6 +15,7 @@ const App = () => {
   const center = useMemo(() => ({ lat: 37.228198, lng: -80.423329 }), []);
 
   const [buses, setBuses] = useState([]);
+  const [geolocationAllowed, setGeolocationAllowed] = useState(false);
   const [busToStop, setbusToStop] = useState([]);
   const [stopCodeToBus, setStopCodeToBus] = useState({});
   const [busLines, setBusLines] = useState([]);
@@ -92,7 +93,6 @@ const App = () => {
       })
       .catch((e) => console.error(e));
 
-
     BackendService.getActiveBusInfo()
       .then((response) => {
         setBuses(response.data.data);
@@ -102,6 +102,13 @@ const App = () => {
         createBusRoutes(response.data.data);
       });
 
+    navigator.permissions.query({ name: 'geolocation' })
+      .then((data) => {
+        console.log(data);
+        if (data.state == "prompt" || data.state == "granted") {
+          setGeolocationAllowed(true);
+        }
+      });
 
     const interval = setInterval(() => {
       BackendService.getActiveBusInfo().then((response) => {
@@ -181,9 +188,9 @@ const App = () => {
 
   const darkenColor = (col, light) => {
 
-    let r = parseInt(col.substr(0, 2), 16);
-    let g = parseInt(col.substr(2, 2), 16);
-    let b = parseInt(col.substr(4, 2), 16);
+    let r = parseInt(col?.substr(0, 2), 16);
+    let g = parseInt(col?.substr(2, 2), 16);
+    let b = parseInt(col?.substr(4, 2), 16);
 
     r = (1 - light) * r + light * 255;
     g = (1 - light) * g + light * 255;
@@ -193,21 +200,23 @@ const App = () => {
   }
 
   return (
-    <Grid container columns={12} direction={"row"} wrap='nowrap' sx={{ width: "100%", height: "100%" }}>
+    <Grid container columns={12} direction={"row"} wrap='nowrap' sx={{ width: "100%", height: "100vh" }}>
       <Grid item xs={true} sx={{ width: "100%", height: "100%" }}>
         {!isLoaded ? (
           <h1>Loading...</h1>
         ) : (
           <>
-            <Fab variant="extended" sx={{ position: "absolute", zIndex: 101, top: "100%", transform: "translate(5%, -110%)" }}
-              onClick={() => {
-                getNearestStop();
-              }}
-            >
-              <NavigationIcon sx={{ mr: 1 }} />
-              Find Nearest Stop
-            </Fab>
+            {geolocationAllowed && (
+              <Fab variant="extended" sx={{ position: "absolute", zIndex: 101, top: "100%", transform: "translate(5%, -110%)" }}
+                onClick={() => {
+                  getNearestStop();
+                }}
+              >
+                <NavigationIcon sx={{ mr: 1 }} />
 
+                Find Nearest Stop
+              </Fab>
+            )}
             <GoogleMap
               mapContainerClassName="map-container"
               center={center}
@@ -263,19 +272,19 @@ const App = () => {
                 let xyz = 'data:image/svg+xml;utf-8, \
               <svg ' + (val.stop.isTimePoint === "Y" ? 'width="30" height="30"' : 'width="20" height="20"') + ' viewBox="0 -960 960 960" xmlns="http://www.w3.org/2000/svg"> \
                   <defs><linearGradient id="mygx"> \
-                      <stop offset="20%" stop-color="%23'+ (val.stop.isTimePoint === "N" ? darkenColor(busToColor[routeIds[2 % routeIds.length]].substring(1), .2) : busToColor[routeIds[2 % routeIds.length]].substring(1)) + '" /> \
-                      <stop offset="25%" stop-color="%23'+ (val.stop.isTimePoint === "N" ? darkenColor(busToColor[routeIds[2 % routeIds.length]].substring(1), .2) : busToColor[routeIds[2 % routeIds.length]].substring(1)) + '"/> \
-                      <stop offset="25%" stop-color="%23'+ (val.stop.isTimePoint === "N" ? darkenColor(busToColor[routeIds[0 % routeIds.length]].substring(1), .2) : busToColor[routeIds[0 % routeIds.length]].substring(1)) + '"/> \
-                      <stop offset="50%" stop-color="%23'+ (val.stop.isTimePoint === "N" ? darkenColor(busToColor[routeIds[0 % routeIds.length]].substring(1), .2) : busToColor[routeIds[0 % routeIds.length]].substring(1)) + '"/> \
-                      <stop offset="50%" stop-color="%23'+ (val.stop.isTimePoint === "N" ? darkenColor(busToColor[routeIds[3 % routeIds.length]].substring(1), .2) : busToColor[routeIds[3 % routeIds.length]].substring(1)) + '"/> \
-                      <stop offset="70%" stop-color="%23'+ (val.stop.isTimePoint === "N" ? darkenColor(busToColor[routeIds[3 % routeIds.length]].substring(1), .2) : busToColor[routeIds[3 % routeIds.length]].substring(1)) + '"/> \
-                      <stop offset="70%" stop-color="%23'+ (val.stop.isTimePoint === "N" ? darkenColor(busToColor[routeIds[1 % routeIds.length]].substring(1), .2) : busToColor[routeIds[1 % routeIds.length]].substring(1)) + '"/> \
+                      <stop offset="20%" stop-color="%23'+ (val.stop.isTimePoint === "N" ? darkenColor(busToColor[routeIds[2 % routeIds.length]]?.substring(1), .2) : busToColor[routeIds[2 % routeIds.length]]?.substring(1)) + '" /> \
+                      <stop offset="25%" stop-color="%23'+ (val.stop.isTimePoint === "N" ? darkenColor(busToColor[routeIds[2 % routeIds.length]]?.substring(1), .2) : busToColor[routeIds[2 % routeIds.length]]?.substring(1)) + '"/> \
+                      <stop offset="25%" stop-color="%23'+ (val.stop.isTimePoint === "N" ? darkenColor(busToColor[routeIds[0 % routeIds.length]]?.substring(1), .2) : busToColor[routeIds[0 % routeIds.length]]?.substring(1)) + '"/> \
+                      <stop offset="50%" stop-color="%23'+ (val.stop.isTimePoint === "N" ? darkenColor(busToColor[routeIds[0 % routeIds.length]]?.substring(1), .2) : busToColor[routeIds[0 % routeIds.length]]?.substring(1)) + '"/> \
+                      <stop offset="50%" stop-color="%23'+ (val.stop.isTimePoint === "N" ? darkenColor(busToColor[routeIds[3 % routeIds.length]]?.substring(1), .2) : busToColor[routeIds[3 % routeIds.length]]?.substring(1)) + '"/> \
+                      <stop offset="70%" stop-color="%23'+ (val.stop.isTimePoint === "N" ? darkenColor(busToColor[routeIds[3 % routeIds.length]]?.substring(1), .2) : busToColor[routeIds[3 % routeIds.length]]?.substring(1)) + '"/> \
+                      <stop offset="70%" stop-color="%23'+ (val.stop.isTimePoint === "N" ? darkenColor(busToColor[routeIds[1 % routeIds.length]]?.substring(1), .2) : busToColor[routeIds[1 % routeIds.length]]?.substring(1)) + '"/> \
                   </linearGradient></defs> \
                   <path fill="url(%23mygx)" stroke-width="1.5" d="M480-480q33 0 56.5-23.5T560-560q0-33-23.5-56.5T480-640q-33 0-56.5 23.5T400-560q0 33 23.5 56.5T480-480Zm0 400Q319-217 239.5-334.5T160-552q0-150 96.5-239T480-880q127 0 223.5 89T800-552q0 100-79.5 217.5T480-80Z"></path> \
                   </svg>';
                 return (val.stop && (
                   <MarkerF
-                    key={val.stop.stopCode + routeIds[0] + routeIds[1] + routeIds[2] + routeIds[3]}
+                    key={val.stop.stopCode + busToColor[routeIds[0]] + busToColor[routeIds[1]] + busToColor[routeIds[2]] + busToColor[routeIds[3]]}
                     onClick={() => {
                       handleStopMarkerClick(i, val);
                     }}
