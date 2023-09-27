@@ -222,7 +222,7 @@ const App = () => {
             )}
             <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={() => setSnackbarOpen(false)}>
               <Alert onClose={() => setSnackbarOpen(false)} severity="error" sx={{ width: '100%' }}>
-                Geolocation disabled
+                Location data disabled
               </Alert>
             </Snackbar>
             <GoogleMap
